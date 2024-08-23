@@ -1,7 +1,7 @@
 {
     "version": 2,
     "name": "Gramophone-backend",
-    "description": "Gramophone-backend",
+   
     "builds": [
       {
         "src": "server.js",
