@@ -17,7 +17,7 @@ const StudentController = {
 
   getAnnouncementsForStudent: async (req, res) => {
     try {
-        const studentID = req.user.userId; // Extract student ID from the authenticated user's token
+        const studentID = req.user.sp_userId; // Extract student ID from the authenticated user's token
 
         // Find all courses where the studentID is listed in the sessions
         const courses = await Course.find({
