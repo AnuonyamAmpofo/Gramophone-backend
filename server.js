@@ -16,9 +16,13 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), // Use MongoStore
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using https
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Set to true in production (HTTPS)
+        maxAge: 24 * 60 * 60 * 1000 // Cookie expiration time (24 hours in milliseconds)
+    }
 }));
+
 
 // MongoDB connection
 const mongoDBUri = process.env.MONGODB_URI;
