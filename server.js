@@ -3,6 +3,7 @@ const session = require('express-session');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const MongoStore = require('connect-mongo'); // Import connect-mongo
 require('dotenv').config(); // To load environment variables from .env file
 
 const app = express();
@@ -15,9 +16,9 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // We'll need to set this to true if we're using https
+    store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), // Use MongoStore
+    cookie: { secure: process.env.NODE_ENV === 'production' } // Set to true if using https
 }));
-
 
 // MongoDB connection
 const mongoDBUri = process.env.MONGODB_URI;
@@ -40,9 +41,9 @@ const announcementRoutes = require('./routes/announcements');
 const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 
-mongoose.set("strictQuery", false)
+mongoose.set("strictQuery", false);
 // Use routes
-app.use('/logout', logoutRoutes)
+app.use('/logout', logoutRoutes);
 app.use('/login', loginRoutes); 
 app.use('/admin', adminRoutes);
 app.use('/students', studentRoutes);
@@ -52,21 +53,17 @@ app.use('/sessionLogs', sessionLogRoutes);
 app.use('/announcements', announcementRoutes);
 app.use('/resources', resourceRoutes);
 
-// // Global Error Handler
-// app.use((err, req, res, next) => {
-//     console.error(err.stack);
-//     res.status(500).json({ message: 'Something went wrong!' });
-// });
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
+});
 
-// // 404 Handler
-// app.use((req, res, next) => {
-//     res.status(404).json({ message: 'Resource not found' });
-// });
-
-
+// 404 Handler
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Resource not found' });
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
-//Please draw my attention for any errors.
