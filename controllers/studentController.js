@@ -26,15 +26,20 @@ const StudentController = {
         return res.status(404).json({ message: 'No courses found for this student' });
       }
   
+      // Log courses to check populated data
+      console.log('Courses with Populated Announcements:', courses);
+  
       // Collect all announcements from the enrolled courses
       const courseAnnouncements = courses.reduce((acc, course) => {
-        course.announcements.forEach(announcement => {
-          acc.push({
-            courseCode: course.courseCode,
-            content: announcement.content,
-            time: announcement.time || announcement.createdAt // Ensure you have a `time` field in your schema
+        if (course.announcements) {
+          course.announcements.forEach(announcement => {
+            acc.push({
+              courseCode: course.courseCode,
+              content: announcement.content,
+              time: announcement.time || announcement.createdAt
+            });
           });
-        });
+        }
         return acc;
       }, []);
   
@@ -55,7 +60,8 @@ const StudentController = {
     } catch (err) {
       res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
     }
-  },
+  }
+  ,
   
 
 
