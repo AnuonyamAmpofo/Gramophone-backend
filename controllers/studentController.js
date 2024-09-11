@@ -15,49 +15,47 @@ const StudentController = {
     }
   },
 
-  getAnnouncementsForStudent: async (req, res) => {
+  getAllCourseAnnouncements: async (req, res) => {
     try {
-        const studentID = req.user.sp_userId; // Extract student ID from the authenticated user's token
+      const studentID = req.user.sp_userId; // Assuming the student's ID is stored in req.user
 
-        // Find all courses where the studentID is listed in the sessions
-        const courses = await Course.find({
-            "sessions.studentID": studentID
-        }).populate('announcements'); // Populate the announcements field
+      // Fetch all courses where the student is enrolled in the sessions array
+      const courses = await Course.find({ 'sessions.studentID': studentID }).populate('announcements');
 
-        if (!courses.length) {
-            return res.status(404).json({ message: 'No courses found for this student' });
-        }
+      if (!courses.length) {
+        return res.status(404).json({ message: 'No courses found for this student' });
+      }
 
-        // Collect all course-related announcements
-        const courseAnnouncements = courses.reduce((acc, course) => {
-            course.announcements.forEach(announcement => {
-                acc.push({
-                    courseCode: course.courseCode,
-                    content: announcement.content,
-                    time: announcement.time
-                });
-            });
-            return acc;
-        }, []);
+      // Collect all announcements from the enrolled courses
+      const courseAnnouncements = courses.reduce((acc, course) => {
+        course.announcements.forEach(announcement => {
+          acc.push({
+            courseCode: course.courseCode,
+            content: announcement.content,
+            time: announcement.time
+          });
+        });
+        return acc;
+      }, []);
 
-        // Fetch general announcements from the admin
-        const adminAnnouncements = await Announcement.find({ type: 'admin' }).select('content time');
+      // Fetch any general announcements if applicable (admin-type announcements)
+      const adminAnnouncements = await Announcement.find({ type: 'admin' }).select('content time');
 
-        // Combine course-related announcements with admin announcements
-        const allAnnouncements = [
-            ...courseAnnouncements,
-            ...adminAnnouncements.map(announcement => ({
-                courseCode: "Admin", // Label admin announcements distinctly
-                content: announcement.content,
-                time: announcement.time
-            }))
-        ];
+      // Combine course-specific and admin announcements
+      const allAnnouncements = [
+        ...courseAnnouncements,
+        ...adminAnnouncements.map(announcement => ({
+          courseCode: 'Admin', // Label admin announcements separately
+          content: announcement.content,
+          time: announcement.time
+        }))
+      ];
 
-        res.status(200).json({ announcements: allAnnouncements });
+      res.status(200).json({ announcements: allAnnouncements });
     } catch (err) {
-        res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
+      res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
     }
-},
+  },
 
 
   // View course-specific announcements
