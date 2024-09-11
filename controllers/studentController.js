@@ -36,7 +36,7 @@ const StudentController = {
             acc.push({
               courseCode: course.courseCode,
               content: announcement.content,
-              time: announcement.time || announcement.createdAt
+              // time: announcement.time || announcement.createdAt
             });
           });
         }
@@ -51,8 +51,8 @@ const StudentController = {
         ...courseAnnouncements,
         ...adminAnnouncements.map(announcement => ({
           courseCode: 'Admin', // Label admin announcements separately
-          content: announcement.content,
-          time: announcement.createdAt
+          content: announcement.content
+          /*time: announcement.createdAt*/
         }))
       ];
   
