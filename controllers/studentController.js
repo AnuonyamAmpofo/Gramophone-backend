@@ -17,45 +17,46 @@ const StudentController = {
 
   getAllCourseAnnouncements: async (req, res) => {
     try {
-      const studentID = req.user.sp_userId; // Assuming the student's ID is stored in req.user
-
-      // Fetch all courses where the student is enrolled in the sessions array
+      const studentID = req.user.sp_userId; // Assuming studentID is stored in req.user
+  
+      // Fetch all courses where the student is enrolled (sessions array has studentID)
       const courses = await Course.find({ 'sessions.studentID': studentID }).populate('announcements');
-
+  
       if (!courses.length) {
         return res.status(404).json({ message: 'No courses found for this student' });
       }
-
+  
       // Collect all announcements from the enrolled courses
       const courseAnnouncements = courses.reduce((acc, course) => {
         course.announcements.forEach(announcement => {
           acc.push({
             courseCode: course.courseCode,
             content: announcement.content,
-            time: announcement.time
+            time: announcement.time || announcement.createdAt // Ensure you have a `time` field in your schema
           });
         });
         return acc;
       }, []);
-
-      // Fetch any general announcements if applicable (admin-type announcements)
-      const adminAnnouncements = await Announcement.find({ type: 'admin' }).select('content time');
-
+  
+      // Fetch any general announcements (admin-type announcements)
+      const adminAnnouncements = await Announcement.find({ type: 'admin' }).select('content createdAt');
+  
       // Combine course-specific and admin announcements
       const allAnnouncements = [
         ...courseAnnouncements,
         ...adminAnnouncements.map(announcement => ({
           courseCode: 'Admin', // Label admin announcements separately
           content: announcement.content,
-          time: announcement.time
+          time: announcement.createdAt
         }))
       ];
-
+  
       res.status(200).json({ announcements: allAnnouncements });
     } catch (err) {
       res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
     }
   },
+  
 
 
   // View course-specific announcements

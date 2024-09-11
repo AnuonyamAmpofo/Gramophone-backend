@@ -11,7 +11,8 @@ const courseSchema = new Schema({
         studentID: { type: String, required: true }, // studentID, not _id
         studentName: {type: String},
         time: { type: String, required: false } // e.g., '2pm'
-    }]
+    }],
+    announcements: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Announcement' }]
 });
 
 const Course = mongoose.model('Course', courseSchema);
