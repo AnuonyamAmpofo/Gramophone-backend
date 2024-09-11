@@ -45,7 +45,7 @@ const StudentController = {
           courseCode: announcement.courseCode,
           title: announcement.title,
           content: announcement.content,
-          time: announcement.time
+          time: new Date(announcement.createdAt).toLocaleString()
         })),
         ...adminAnnouncements.map(announcement => ({
           courseCode: 'Admin', // Label admin announcements separately
