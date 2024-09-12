@@ -18,7 +18,7 @@ router.get('/courses/:courseCode/students', InstructorController.viewCourseStude
 // Route to update personal info
 router.put('/personal-info', InstructorController.updatePersonalInfo);
 
-router.get('/instructor-info', InstructorController.getInstructorInfo);
+router.get('/instructor-info', InstructorController.viewPersonalInfo);
 
 // Route to post an announcement in a particular course
 router.post('/courses/:courseCode/announcement', InstructorController.postAnnouncement);
