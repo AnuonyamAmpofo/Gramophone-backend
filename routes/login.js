@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
             user = await Instructor.findOne({ instructorID: username });
             if (user) {
                 role = 'instructor';
-                userName = user.instructorName; // Use the relevant property for Instructor name
+                userName = user.name; // Use the relevant property for Instructor name
             } else {
                 user = await Student.findOne({ studentID: username });
                 if (user) {
