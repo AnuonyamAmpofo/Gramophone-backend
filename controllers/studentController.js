@@ -128,9 +128,7 @@ const StudentController = {
             name: instructor.instructorName,
             email: instructor.email,
             contact: instructor.contact,
-            qualifications: instructor.qualifications,
-            bio: instructor.bio,
-            reviews: instructor.reviews
+            
           }
         };
       }));

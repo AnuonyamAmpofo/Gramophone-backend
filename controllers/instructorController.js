@@ -28,6 +28,7 @@ const InstructorController = {
         courses: courses.map(course => ({
           courseCode: course.courseCode,
           instrument: course.instrument,
+          instructorName: course.instructorName,
           day: course.day,
           numberOfStudents: course.sessions.length
         }))
