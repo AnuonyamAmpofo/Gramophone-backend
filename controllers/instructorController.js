@@ -30,7 +30,12 @@ const InstructorController = {
           instrument: course.instrument,
           instructorName: course.instructorName,
           day: course.day,
-          numberOfStudents: course.sessions.length
+          numberOfStudents: course.sessions.length,
+          sessions: course.sessions.map(session => ({
+            studentID: session.studentID,
+            studentName: session.studentName,
+            time: session.time
+          }))
         }))
       });
     } catch (err) {
