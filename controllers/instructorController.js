@@ -128,56 +128,74 @@ const InstructorController = {
     try {
       const { courseCode } = req.params;
       const { title, content } = req.body;
-
-      const course = await Course.findOne({ courseCode, instructorID: req.user.sp_userId });
-
+      const instructorID = req.user.sp_userId; // Instructor's ID from the request
+  
+      // Find the course to ensure it exists and is taught by this instructor
+      const course = await Course.findOne({ courseCode, instructorID });
+  
       if (!course) {
         return res.status(404).json({ message: 'Course not found' });
       }
-
+  
+      // Create a new announcement
       const newAnnouncement = new Announcement({
         courseCode,
-        instructorID: req.user.sp_userId,
+        instructorID,
         title,
         content,
-        datePosted: new Date()
+        datePosted: new Date(),
       });
-
+  
+      // Save the new announcement
       await newAnnouncement.save();
-
-      res.status(200).json({ message: 'Announcement posted successfully' });
+  
+      // Optionally, push the announcement ID to the course document
+      course.announcements.push(newAnnouncement._id);
+      await course.save();
+  
+      res.status(200).json({ message: 'Announcement posted successfully', announcement: newAnnouncement });
     } catch (err) {
       res.status(500).json({ message: 'Failed to post announcement', error: err.message });
     }
   },
-
-  // Post announcement for a particular student
-  postAnnouncementForStudent: async (req, res) => {
+  
+  postCommentForStudent: async (req, res) => {
     try {
-      const { studentID } = req.params;
-      const { title, content } = req.body;
-
-      const student = await Student.findOne({ studentID });
-
-      if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
+      const { courseCode, studentID } = req.params;
+      const { comment } = req.body;
+      const instructorID = req.user.sp_userId;
+  
+      // Find the course by courseCode and instructorID
+      const course = await Course.findOne({ courseCode, instructorID });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
       }
-
-      const newAnnouncement = new Announcement({
-        studentID,
-        instructorID: req.user.instructorID,
-        title,
-        content,
-        datePosted: new Date()
+  
+      // Find the session (student) in the course sessions array
+      const session = course.sessions.find((session) => session.studentID === studentID);
+  
+      if (!session) {
+        return res.status(404).json({ message: 'Student not found in this course' });
+      }
+  
+      // Add the comment to the session's comments array (you may need to ensure the schema supports this)
+      session.comments = session.comments || [];
+      session.comments.push({
+        comment,
+        datePosted: new Date(),
+        instructorID,
       });
-
-      await newAnnouncement.save();
-
-      res.status(200).json({ message: 'Announcement posted for student successfully' });
+  
+      // Save the course with the updated session
+      await course.save();
+  
+      res.status(200).json({ message: 'Comment posted successfully for the student' });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to post announcement for student', error: err.message });
+      res.status(500).json({ message: 'Failed to post comment', error: err.message });
     }
   },
+  
   resetPassword: async (req, res) => {
     const { instructorID } = req.params;
     const { newPassword } = req.body;
@@ -239,6 +257,35 @@ const InstructorController = {
         res.status(500).json({ message: 'Failed to retrieve instructor name', error: err.message });
       }
     },
+    viewCourseDetail: async (req, res) => {
+      try {
+        const { courseCode } = req.params; // Extract course code from the URL params
+        const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
+    
+        // Find the course by courseCode and instructorID
+        const course = await Course.findOne({ courseCode, instructorID });
+    
+        if (!course) {
+          return res.status(404).json({ message: 'Course not found' });
+        }
+    
+        // Format the course data for response
+        res.status(200).json({
+          courseCode: course.courseCode,
+          day: course.day,
+          numberOfStudents: course.sessions.length,
+          sessions: course.sessions.map((session) => ({
+            studentID: session.studentID,
+            studentName: session.studentName,
+            time: session.time,
+          })),
+          announcements: course.announcements, // Assuming announcements are embedded in the course model
+        });
+      } catch (err) {
+        res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
+      }
+    },
+    
   
 
 
