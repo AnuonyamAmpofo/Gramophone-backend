@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+// const Schema = mongoose.Schema;
 
-const courseSchema = new Schema({
+const courseSchema = new mongoose.Schema({
     courseCode: { type: String, required: true, unique: true }, // e.g., 'Drum123'
     instrument: { type: String, required: true }, // e.g., 'Drum'
     instructorID: { type: String, required: true },

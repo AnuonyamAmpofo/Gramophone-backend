@@ -195,7 +195,35 @@ const InstructorController = {
       res.status(500).json({ message: 'Failed to post comment', error: err.message });
     }
   },
-  
+  viewCourseDetail: async (req, res) => {
+  try {
+    const { courseCode } = req.params; // Extract course code from the URL params
+    const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
+
+    // Find the course by courseCode and instructorID
+    const course = await Course.findOne({ courseCode, instructorID });
+
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Format the course data for response
+    res.status(200).json({
+      courseCode: course.courseCode,
+      day: course.day,
+      numberOfStudents: course.sessions.length,
+      sessions: course.sessions.map((session) => ({
+        studentID: session.studentID,
+        studentName: session.studentName,
+        time: session.time,
+      })),
+      announcements: course.announcements, // Assuming announcements are embedded in the course model
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
+  }
+},
+
   resetPassword: async (req, res) => {
     const { instructorID } = req.params;
     const { newPassword } = req.body;
