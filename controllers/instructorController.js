@@ -155,13 +155,18 @@ const InstructorController = {
     try {
       const { courseCode } = req.params;
       const { title, content } = req.body;
-      const instructorID = req.user.sp_userId; // Instructor's ID from the request
+      const instructorID = req.user.sp_userId; // Assuming this is set correctly in middleware
+  
+      // Validate input
+      if (!title || !content) {
+        return res.status(400).json({ message: 'Title and content are required' });
+      }
   
       // Find the course to ensure it exists and is taught by this instructor
       const course = await Course.findOne({ courseCode, instructorID });
   
       if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
+        return res.status(404).json({ message: 'Course not found or you do not have access' });
       }
   
       // Create a new announcement
@@ -176,15 +181,17 @@ const InstructorController = {
       // Save the new announcement
       await newAnnouncement.save();
   
-      // Optionally, push the announcement ID to the course document
+      // Add the announcement to the course's announcements array
       course.announcements.push(newAnnouncement._id);
       await course.save();
   
+      // Return the new announcement and success message
       res.status(200).json({ message: 'Announcement posted successfully', announcement: newAnnouncement });
     } catch (err) {
       res.status(500).json({ message: 'Failed to post announcement', error: err.message });
     }
   },
+  
   
   postCommentForStudent: async (req, res) => {
     try {
