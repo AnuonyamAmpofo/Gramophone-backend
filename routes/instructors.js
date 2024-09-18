@@ -31,5 +31,6 @@ router.post('/courses/:courseCode/announcement', InstructorController.postAnnoun
 // router.post('/students/:studentID/announcement', InstructorController.postAnnouncementForStudent);
 router.get('/name-info', InstructorController.getInstructorName);
 router.post('/courses/:courseCode/student/:studentID/comments', InstructorController.postCommentForStudent);
+router.get('/courses/students/:studentID', InstructorController.getStudentInfo), 
 router.put('/reset-password/:instructorID', InstructorController.resetPassword);
 module.exports = router;
