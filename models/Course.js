@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const Schema = mongoose.Schema;
 
 const courseSchema = new mongoose.Schema({
     courseCode: { type: String, required: true, unique: true }, // e.g., 'Drum123'
@@ -8,9 +7,8 @@ const courseSchema = new mongoose.Schema({
     instructorName: { type: String },
     day: { type: String, required: true }, // e.g., 'Monday'
     sessions: [{
-        studentID: { type: String, required: true }, // studentID, not _id
-        studentName: { type: String },
-        time: { type: String, required: false }, // e.g., '2pm'
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        time: { type: String }, // e.g., '2pm'
         comments: [{ // Array of comments for each student
             comment: { type: String, required: true },
             instructorID: { type: String, required: true },

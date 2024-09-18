@@ -1,45 +1,43 @@
 const Instructor = require('../models/Instructor'); // Assuming Instructor model is stored here
 const Course = require('../models/Course'); // Assuming Course model is stored here
+const Student = require('../models/Student')
 const Announcement = require('../models/Announcement'); // Assuming Announcement model is stored here
 const bcrypt = require('bcrypt');
 
 
 const InstructorController = {
   // View courses the instructor is to teach
-  viewCourses: async (req, res) => {
+  viewCourseDetail: async (req, res) => {
     try {
-      const instructorID = req.user.sp_userId;
-      console.log('Instructor ID:', instructorID);  // Debug statement
-  
-      // Check if instructorID is available
-      if (!instructorID) {
-        return res.status(400).json({ message: 'Instructor ID is not available' });
+      const { courseCode } = req.params; // Extract course code from the URL params
+      const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
+
+      // Find the course by courseCode and instructorID
+      const course = await Course.findOne({ courseCode, instructorID }).populate({
+        path: 'sessions.student', // Populate student information
+        select: 'name studentID contact email' // Fields to include
+      });
+
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
       }
-  
-      const courses = await Course.find({ instructorID });
-      // console.log('Courses found:', courses);  // Debug statement
-  
-      if (!courses.length) {
-        return res.status(404).json({ message: 'No courses found for this instructor' });
-      }
-  
+
+      // Format the course data for response
       res.status(200).json({
-        message: 'Courses retrieved successfully',
-        courses: courses.map(course => ({
-          courseCode: course.courseCode,
-          instrument: course.instrument,
-          instructorName: course.instructorName,
-          day: course.day,
-          numberOfStudents: course.sessions.length,
-          sessions: course.sessions.map(session => ({
-            studentID: session.studentID,
-            studentName: session.studentName,
-            time: session.time
-          }))
-        }))
+        courseCode: course.courseCode,
+        day: course.day,
+        numberOfStudents: course.sessions.length,
+        sessions: course.sessions.map((session) => ({
+          studentID: session.student.studentID,
+          studentName: session.student.name,
+          contact: session.student.contact,
+          email: session.student.email,
+          time: session.time,
+        })),
+        announcements: course.announcements, // Assuming announcements are embedded in the course model
       });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to retrieve courses', error: err.message });
+      res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
     }
   },
 
@@ -195,7 +193,7 @@ const InstructorController = {
       res.status(500).json({ message: 'Failed to post comment', error: err.message });
     }
   },
-  viewCourseDetail: async (req, res) => {
+  viewCourses: async (req, res) => {
   try {
     const { courseCode } = req.params; // Extract course code from the URL params
     const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
