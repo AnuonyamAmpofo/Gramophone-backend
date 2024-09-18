@@ -12,7 +12,8 @@ router.get('/courses', InstructorController.viewCourses);
 // Route to view the number of students and the list of students in a course
 router.get('/courses/:courseCode/students', InstructorController.viewCourseStudents);
 
-// Route to view personal info
+// Route to get course details
+router.get('/course/:courseCode', InstructorController.viewCourseDetail);
 // router.get('/personal-info', InstructorController.viewPersonalInfo);
 
 // Route to update personal info
