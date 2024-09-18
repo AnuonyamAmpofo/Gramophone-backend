@@ -9,37 +9,40 @@ const InstructorController = {
   // View courses the instructor is to teach
   viewCourseDetail: async (req, res) => {
     try {
-      const { courseCode } = req.params; // Extract course code from the URL params
-      const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
-
-      // Find the course by courseCode and instructorID
-      const course = await Course.findOne({ courseCode, instructorID }).populate({
-        path: 'sessions.student', // Populate student information
-        select: 'name studentID contact email' // Fields to include
-      });
-
+      const { courseCode } = req.params;
+      const instructorID = req.user.sp_userId;
+  
+      const course = await Course.findOne({ courseCode, instructorID })
+        .populate({
+          path: 'sessions.student', // Populate the 'student' field in sessions
+           // Specify which fields to include from the Student model
+        })
+        .populate('announcements'); // Optionally populate announcements if needed
+  
       if (!course) {
         return res.status(404).json({ message: 'Course not found' });
       }
-
-      // Format the course data for response
+  
       res.status(200).json({
         courseCode: course.courseCode,
         day: course.day,
         numberOfStudents: course.sessions.length,
-        sessions: course.sessions.map((session) => ({
-          studentID: session.student.studentID,
-          studentName: session.student.name,
-          contact: session.student.contact,
-          email: session.student.email,
+        sessions: course.sessions.map(session => ({
+          studentID: session.studentID,
+          student: session.student, // This will now include detailed student info
+          // studentName: session.student.email,
           time: session.time,
+          comments: session.comments || []
         })),
-        announcements: course.announcements, // Assuming announcements are embedded in the course model
+        announcements: course.announcements || []
       });
     } catch (err) {
       res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
     }
   },
+  
+  
+  
 
   // View the number of students in each course and list of students
   viewCourseStudents: async (req, res) => {
@@ -283,34 +286,34 @@ const InstructorController = {
         res.status(500).json({ message: 'Failed to retrieve instructor name', error: err.message });
       }
     },
-    viewCourseDetail: async (req, res) => {
-      try {
-        const { courseCode } = req.params; // Extract course code from the URL params
-        const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
+    // viewCourseDetail: async (req, res) => {
+    //   try {
+    //     const { courseCode } = req.params; // Extract course code from the URL params
+    //     const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
     
-        // Find the course by courseCode and instructorID
-        const course = await Course.findOne({ courseCode, instructorID });
+    //     // Find the course by courseCode and instructorID
+    //     const course = await Course.findOne({ courseCode, instructorID });
     
-        if (!course) {
-          return res.status(404).json({ message: 'Course not found' });
-        }
+    //     if (!course) {
+    //       return res.status(404).json({ message: 'Course not found' });
+    //     }
     
-        // Format the course data for response
-        res.status(200).json({
-          courseCode: course.courseCode,
-          day: course.day,
-          numberOfStudents: course.sessions.length,
-          sessions: course.sessions.map((session) => ({
-            studentID: session.studentID,
-            studentName: session.studentName,
-            time: session.time,
-          })),
-          announcements: course.announcements, // Assuming announcements are embedded in the course model
-        });
-      } catch (err) {
-        res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
-      }
-    },
+    //     // Format the course data for response
+    //     res.status(200).json({
+    //       courseCode: course.courseCode,
+    //       day: course.day,
+    //       numberOfStudents: course.sessions.length,
+    //       sessions: course.sessions.map((session) => ({
+    //         studentID: session.studentID,
+    //         studentName: session.studentName,
+    //         time: session.time,
+    //       })),
+    //       announcements: course.announcements, // Assuming announcements are embedded in the course model
+    //     });
+    //   } catch (err) {
+    //     res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
+    //   }
+    // },
     
   
 
