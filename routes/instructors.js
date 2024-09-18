@@ -13,7 +13,7 @@ router.get('/courses', InstructorController.viewCourses);
 router.get('/courses/:courseCode/students', InstructorController.viewCourseStudents);
 
 // Route to get course details
-router.get('/course/:courseCode', InstructorController.viewCourseDetail);
+router.get('/courses/:courseCode', InstructorController.viewCourseDetail);
 // router.get('/personal-info', InstructorController.viewPersonalInfo);
 
 // Route to update personal info
