@@ -1,5 +1,6 @@
 const Instructor = require('../models/Instructor'); // Assuming Instructor model is stored here
 const Course = require('../models/Course'); // Assuming Course model is stored here
+const Comment = require('../models/Comment')
 const Announcement = require('../models/Announcement'); // Assuming Announcement model is stored here
 const bcrypt = require('bcrypt');
 
@@ -195,40 +196,25 @@ const InstructorController = {
   
   postCommentForStudent: async (req, res) => {
     try {
-      const { courseCode, studentID } = req.params;
-      const { comment } = req.body;
-      const instructorID = req.user.sp_userId;
-  
-      // Find the course by courseCode and instructorID
-      const course = await Course.findOne({ courseCode, instructorID });
-  
-      if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
-      }
-  
-      // Find the session (student) in the course sessions array
-      const session = course.sessions.find((session) => session.studentID === studentID);
-  
-      if (!session) {
-        return res.status(404).json({ message: 'Student not found in this course' });
-      }
-  
-      // Add the comment to the session's comments array (you may need to ensure the schema supports this)
-      session.comments = session.comments || [];
-      session.comments.push({
-        comment,
-        datePosted: new Date(),
-        instructorID,
-      });
-  
-      // Save the course with the updated session
-      await course.save();
-  
-      res.status(200).json({ message: 'Comment posted successfully for the student' });
+        const { courseCode, studentID } = req.params;
+        const { comment } = req.body;
+        const instructorID = req.user.sp_userId; // Assume this is set from your middleware
+
+        // Create a new comment
+        const newComment = new Comment({
+            courseCode,
+            studentID,
+            comment,
+            instructorID,
+        });
+
+        await newComment.save();
+
+        res.status(200).json({ message: 'Comment added successfully' });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to post comment', error: err.message });
+        res.status(500).json({ message: 'Failed to add comment', error: err.message });
     }
-  },
+},
   viewCourseDetail: async (req, res) => {
   try {
     const { courseCode } = req.params; // Extract course code from the URL params

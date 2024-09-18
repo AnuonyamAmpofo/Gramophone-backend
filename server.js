@@ -45,6 +45,7 @@ const announcementRoutes = require('./routes/announcements');
 const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 
+
 mongoose.set("strictQuery", false);
 // Use routes
 app.use('/logout', logoutRoutes);

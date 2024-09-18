@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+
 const InstructorController = require('../controllers/instructorController');
 const {authenticateInstructor }= require('../middleware/auth');
 
@@ -29,6 +30,6 @@ router.post('/courses/:courseCode/announcement', InstructorController.postAnnoun
 // Route to post an announcement for a particular student
 // router.post('/students/:studentID/announcement', InstructorController.postAnnouncementForStudent);
 router.get('/name-info', InstructorController.getInstructorName);
-
+router.post('/courses/:courseCode/student/:studentID/comments', InstructorController.postCommentForStudent);
 router.put('/reset-password/:instructorID', InstructorController.resetPassword);
 module.exports = router;
