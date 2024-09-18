@@ -1,6 +1,7 @@
 const Instructor = require('../models/Instructor'); // Assuming Instructor model is stored here
 const Course = require('../models/Course'); // Assuming Course model is stored here
-const Comment = require('../models/Comment')
+const Comment = require('../models/Comment');
+const Student = require('../models/Student');
 const Announcement = require('../models/Announcement'); // Assuming Announcement model is stored here
 const bcrypt = require('bcrypt');
 
@@ -199,12 +200,24 @@ const InstructorController = {
         const { courseCode, studentID } = req.params;
         const { comment } = req.body;
         const instructorID = req.user.sp_userId; // Assume this is set from your middleware
+        
+        const instructor = await Instructor.findOne({instructorID});
+        if (!instructor){
+          return res.status(404).json({message: "Instructor Not Found"})
+        }
 
+        const student = await Student.findOne({studentID});
+        if (!student){
+          return res.status(404).json({message: "Student Not Found"})
+        }
+        
         // Create a new comment
         const newComment = new Comment({
             courseCode,
             studentID,
+            studentName: student.studentName,
             comment,
+            instructorName: instructor.name,
             instructorID,
         });
 
