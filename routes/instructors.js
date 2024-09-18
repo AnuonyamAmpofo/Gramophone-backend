@@ -21,6 +21,8 @@ router.put('/personal-info', InstructorController.updatePersonalInfo);
 
 router.get('/instructor-info', InstructorController.viewPersonalInfo);
 
+//To get announcements for specific course
+router.get('/courses/:courseCode/announcements', InstructorController.getCourseAnnouncements);
 // Route to post an announcement in a particular course
 router.post('/courses/:courseCode/announcement', InstructorController.postAnnouncement);
 

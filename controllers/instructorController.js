@@ -122,6 +122,33 @@ const InstructorController = {
       res.status(500).json({ message: 'Failed to update personal information', error: err.message });
     }
   },
+  getCourseAnnouncements: async (req, res) => {
+    const { courseCode } = req.params; // Extract course code from request parameters
+  
+    try {
+      // Find the course by its courseCode
+      const course = await Course.findOne({ courseCode });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      // Fetch all announcements related to the course
+      const courseAnnouncements = await Announcement.find({ courseCode });
+  
+      if (!courseAnnouncements.length) {
+        return res.status(404).json({ message: 'No announcements found for this course' });
+      }
+  
+      // Return the announcements in the response
+      res.status(200).json({
+        message: 'Course announcements retrieved successfully',
+        announcements: courseAnnouncements,
+      });
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to retrieve course announcements', error: err.message });
+    }
+  },
 
   // Post announcement in a particular course
   postAnnouncement: async (req, res) => {
