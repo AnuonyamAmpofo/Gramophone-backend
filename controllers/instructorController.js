@@ -4,6 +4,8 @@ const Comment = require('../models/Comment');
 const Student = require('../models/Student');
 const Announcement = require('../models/Announcement'); // Assuming Announcement model is stored here
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+
 
 
 const InstructorController = {
