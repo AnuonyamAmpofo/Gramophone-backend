@@ -200,28 +200,35 @@ const InstructorController = {
     const { courseCode, announcementId } = req.params;
 
     try {
-        // Validate ObjectId
+        // Validate ObjectId format
         if (!mongoose.Types.ObjectId.isValid(announcementId)) {
             return res.status(400).json({ message: 'Invalid announcement ID' });
         }
 
-        // Find the course
+        // Find the course by courseCode
         const course = await Course.findOne({ courseCode });
 
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        // Find the index of the announcement in the array
-        const announcementIndex = course.announcements.findIndex(ann => ann.equals(announcementId));
+        // Convert announcementId to string and find its index in the course's announcements array
+        const announcementIndex = course.announcements.findIndex(ann => ann.toString() === announcementId);
 
         if (announcementIndex === -1) {
-            return res.status(404).json({ message: 'Announcement not found' });
+            return res.status(404).json({ message: 'Announcement not found in this course' });
         }
 
-        // Remove the announcement from the array
+        // Remove the announcement ID from the course's announcements array
         course.announcements.splice(announcementIndex, 1);
-        await course.save();
+        await course.save(); // Save the updated course
+
+        // Delete the announcement document from the Announcement collection
+        const deletedAnnouncement = await Announcement.findByIdAndDelete(announcementId);
+
+        if (!deletedAnnouncement) {
+            return res.status(404).json({ message: 'Announcement not found' });
+        }
 
         res.status(200).json({ message: 'Announcement deleted successfully' });
     } catch (error) {
@@ -229,6 +236,7 @@ const InstructorController = {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 },
+
   
 
 editAnnouncement: async (req, res) => {
