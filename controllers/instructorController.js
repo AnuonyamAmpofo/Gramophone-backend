@@ -197,29 +197,37 @@ const InstructorController = {
   },
   deleteAnnouncement: async (req, res) => {
     const { courseCode, announcementId } = req.params;
-  
+
     try {
-      const course = await Course.findOne({ courseCode });
-  
-      if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
-      }
-  
-      const announcement = course.announcements.id(announcementId); // Use .id() to find by _id
-  
-      if (!announcement) {
-        return res.status(404).json({ message: 'Announcement not found' });
-      }
-  
-      // Remove the announcement
-      announcement.remove();
-      await course.save();
-  
-      res.status(200).json({ message: 'Announcement deleted successfully' });
+        // Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(announcementId)) {
+            return res.status(400).json({ message: 'Invalid announcement ID' });
+        }
+
+        // Find the course
+        const course = await Course.findOne({ courseCode });
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Find the index of the announcement in the array
+        const announcementIndex = course.announcements.findIndex(ann => ann.equals(announcementId));
+
+        if (announcementIndex === -1) {
+            return res.status(404).json({ message: 'Announcement not found' });
+        }
+
+        // Remove the announcement from the array
+        course.announcements.splice(announcementIndex, 1);
+        await course.save();
+
+        res.status(200).json({ message: 'Announcement deleted successfully' });
     } catch (error) {
-      res.status(500).json({ message: 'Server error' });
+        console.error("Error deleting announcement:", error.message); // Log detailed error
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
-  },
+},
   
 
 editAnnouncement: async (req, res) => {
