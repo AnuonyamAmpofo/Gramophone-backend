@@ -194,7 +194,7 @@ const InstructorController = {
     }
   },
   deleteAnnouncement: async (req, res) => {
-    const { courseCode, announcementID } = req.params;
+    const { courseCode, announcementId } = req.params;
   
     try {
       const course = await Course.findOne({ courseCode });
@@ -203,11 +203,14 @@ const InstructorController = {
         return res.status(404).json({ message: 'Course not found' });
       }
   
-      // Filter out the announcement by ID
-      course.announcements = course.announcements.filter(
-        (announcement) => announcement._id.toString() !== announcementID
-      );
+      const announcement = course.announcements.id(announcementId); // Use .id() to find by _id
   
+      if (!announcement) {
+        return res.status(404).json({ message: 'Announcement not found' });
+      }
+  
+      // Remove the announcement
+      announcement.remove();
       await course.save();
   
       res.status(200).json({ message: 'Announcement deleted successfully' });
@@ -216,7 +219,7 @@ const InstructorController = {
     }
   },
   editAnnouncement: async (req, res) => {
-    const { courseCode, announcementID } = req.params;
+    const { courseCode, announcementId } = req.params;
     const { title, content } = req.body; // Expect title/content in the request body
   
     try {
@@ -226,9 +229,7 @@ const InstructorController = {
         return res.status(404).json({ message: 'Course not found' });
       }
   
-      const announcement = course.announcements.find(
-        (ann) => ann._id.toString() === announcementID
-      );
+      const announcement = course.announcements.id(announcementId); // Use .id() to find by _id
   
       if (!announcement) {
         return res.status(404).json({ message: 'Announcement not found' });
