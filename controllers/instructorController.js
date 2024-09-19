@@ -218,43 +218,39 @@ const InstructorController = {
       res.status(500).json({ message: 'Server error' });
     }
   },
-  editAnnouncement: async (req, res) => {
-    const { courseCode, announcementId } = req.params;
+  
+
+editAnnouncement: async (req, res) => {
+    const { announcementId } = req.params; // Assuming announcementId is the ID of the announcement to edit
     const { title, content } = req.body;
 
     try {
-        // Check for valid ObjectId
+        // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(announcementId)) {
             return res.status(400).json({ message: 'Invalid announcement ID' });
         }
 
-        // Find the course
-        const course = await Course.findOne({ courseCode });
-
-        if (!course) {
-            return res.status(404).json({ message: 'Course not found' });
-        }
-
-        // Find the announcement by its ID
-        const announcement = course.announcements.id(announcementId);
+        // Find and update the announcement
+        const announcement = await Announcement.findById(announcementId);
 
         if (!announcement) {
             return res.status(404).json({ message: 'Announcement not found' });
         }
 
-        // Update announcement fields
+        // Update fields if provided
         if (title) announcement.title = title;
         if (content) announcement.content = content;
 
-        // Save the updated course document
-        await course.save();
+        // Save the updated announcement
+        await announcement.save();
 
         res.status(200).json({ message: 'Announcement updated successfully' });
     } catch (error) {
-        console.error("Error updating announcement:", error); // Log error for debugging
-        res.status(500).json({ message: 'Server error' });
+        console.error("Error updating announcement:", error.message); // Log detailed error
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 },
+
 
   getStudentInfo: async(req,res)=> {
     try {
