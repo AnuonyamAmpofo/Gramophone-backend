@@ -9,6 +9,7 @@ router.use(authenticateInstructor);
 
 // Route to view courses the instructor is to teach
 router.get('/courses', InstructorController.viewCourses);
+router.get('/courses/today', InstructorController.viewCoursesforToday);
 
 // Route to view the number of students and the list of students in a course
 router.get('/courses/:courseCode/students', InstructorController.viewCourseStudents);

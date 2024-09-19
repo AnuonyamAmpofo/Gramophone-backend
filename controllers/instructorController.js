@@ -5,6 +5,7 @@ const Student = require('../models/Student');
 const Announcement = require('../models/Announcement'); // Assuming Announcement model is stored here
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const { format } = require('date-fns');
 
 
 
@@ -25,6 +26,48 @@ const InstructorController = {
   
       if (!courses.length) {
         return res.status(404).json({ message: 'No courses found for this instructor' });
+      }
+  
+      res.status(200).json({
+        message: 'Courses retrieved successfully',
+        courses: courses.map(course => ({
+          courseCode: course.courseCode,
+          instrument: course.instrument,
+          instructorName: course.instructorName,
+          day: course.day,
+          numberOfStudents: course.sessions.length,
+          sessions: course.sessions.map(session => ({
+            studentID: session.studentID,
+            studentName: session.studentName,
+            time: session.time
+          }))
+        }))
+      });
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to retrieve courses', error: err.message });
+    }
+  },
+  viewCoursesforToday: async (req, res) => {
+    try {
+      const instructorID = req.user.sp_userId;
+      console.log('Instructor ID:', instructorID);  // Debug statement
+  
+      // Check if instructorID is available
+      if (!instructorID) {
+        return res.status(400).json({ message: 'Instructor ID is not available' });
+      }
+  
+      // Get the current day of the week
+      const currentDay = format(new Date(), 'EEEE'); // 'EEEE' gives the full name of the day (e.g., 'Monday')
+  
+      // Find courses for the instructor that match today's day
+      const courses = await Course.find({ 
+        instructorID, 
+        day: currentDay // Filter by day
+      });
+  
+      if (!courses.length) {
+        return res.status(404).json({ message: 'No courses found for this instructor today' });
       }
   
       res.status(200).json({
