@@ -138,7 +138,8 @@ const InstructorController = {
       }
   
       // Fetch all announcements related to the course
-      const courseAnnouncements = await Announcement.find({ courseCode });
+      const courseAnnouncements = await Announcement.find({ courseCode }).sort({createdAt: -1});
+        // .sort({ createdAt: -1 });
   
       if (!courseAnnouncements.length) {
         return res.status(404).json({ message: 'No announcements found for this course' });
