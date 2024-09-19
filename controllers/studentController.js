@@ -51,7 +51,7 @@ const StudentController = {
           courseCode: 'Admin', // Label admin announcements separately
           title: announcement.title,
           content: announcement.content,
-          time: announcement.time
+          time: new Date(announcement.createdAt).toLocaleString()
         }))
       ];
   
