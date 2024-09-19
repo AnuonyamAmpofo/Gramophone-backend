@@ -27,6 +27,10 @@ router.get('/courses/:courseCode/announcements', InstructorController.getCourseA
 // Route to post an announcement in a particular course
 router.post('/courses/:courseCode/announcement', InstructorController.postAnnouncement);
 
+router.delete('/courses/:courseCode/announcement/:announcementID', InstructorController.deleteAnnouncement);
+
+router.patch('/courses/:courseCode/announcement/:announcementID', InstructorController.editAnnouncement);
+
 // Route to post an announcement for a particular student
 // router.post('/students/:studentID/announcement', InstructorController.postAnnouncementForStudent);
 router.get('/name-info', InstructorController.getInstructorName);

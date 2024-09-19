@@ -193,6 +193,58 @@ const InstructorController = {
       res.status(500).json({ message: 'Failed to post announcement', error: err.message });
     }
   },
+  deleteAnnouncement: async (req, res) => {
+    const { courseCode, announcementID } = req.params;
+  
+    try {
+      const course = await Course.findOne({ courseCode });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      // Filter out the announcement by ID
+      course.announcements = course.announcements.filter(
+        (announcement) => announcement._id.toString() !== announcementID
+      );
+  
+      await course.save();
+  
+      res.status(200).json({ message: 'Announcement deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  },
+  editAnnouncement: async (req, res) => {
+    const { courseCode, announcementID } = req.params;
+    const { title, content } = req.body; // Expect title/content in the request body
+  
+    try {
+      const course = await Course.findOne({ courseCode });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      const announcement = course.announcements.find(
+        (ann) => ann._id.toString() === announcementID
+      );
+  
+      if (!announcement) {
+        return res.status(404).json({ message: 'Announcement not found' });
+      }
+  
+      // Update only the fields provided
+      if (title) announcement.title = title;
+      if (content) announcement.content = content;
+  
+      await course.save();
+  
+      res.status(200).json({ message: 'Announcement updated successfully' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  },
   getStudentInfo: async(req,res)=> {
     try {
       const { studentID } = req.params;
