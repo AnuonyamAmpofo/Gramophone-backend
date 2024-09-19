@@ -220,32 +220,42 @@ const InstructorController = {
   },
   editAnnouncement: async (req, res) => {
     const { courseCode, announcementId } = req.params;
-    const { title, content } = req.body; // Expect title/content in the request body
-  
+    const { title, content } = req.body;
+
     try {
-      const course = await Course.findOne({ courseCode });
-  
-      if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
-      }
-  
-      const announcement = course.announcements.id(announcementId); // Use .id() to find by _id
-  
-      if (!announcement) {
-        return res.status(404).json({ message: 'Announcement not found' });
-      }
-  
-      // Update only the fields provided
-      if (title) announcement.title = title;
-      if (content) announcement.content = content;
-  
-      await course.save();
-  
-      res.status(200).json({ message: 'Announcement updated successfully' });
+        // Check for valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(announcementId)) {
+            return res.status(400).json({ message: 'Invalid announcement ID' });
+        }
+
+        // Find the course
+        const course = await Course.findOne({ courseCode });
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Find the announcement by its ID
+        const announcement = course.announcements.id(announcementId);
+
+        if (!announcement) {
+            return res.status(404).json({ message: 'Announcement not found' });
+        }
+
+        // Update announcement fields
+        if (title) announcement.title = title;
+        if (content) announcement.content = content;
+
+        // Save the updated course document
+        await course.save();
+
+        res.status(200).json({ message: 'Announcement updated successfully' });
     } catch (error) {
-      res.status(500).json({ message: 'Server error' });
+        console.error("Error updating announcement:", error); // Log error for debugging
+        res.status(500).json({ message: 'Server error' });
     }
-  },
+},
+
   getStudentInfo: async(req,res)=> {
     try {
       const { studentID } = req.params;
