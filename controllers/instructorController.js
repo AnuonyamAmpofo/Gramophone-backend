@@ -170,31 +170,26 @@ const InstructorController = {
     }
   },
   getCourseAnnouncements: async (req, res) => {
-    const { courseCode } = req.params; // Extract course code from request parameters
-  
     try {
-      // Find the course by its courseCode
-      const course = await Course.findOne({ courseCode });
+      const { courseCode } = req.params;
   
-      if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
-      }
+      // Step 1: Find announcements for the course
+      const announcements = await Announcement.find({ courseCode });
   
-      // Fetch all announcements related to the course
-      const courseAnnouncements = await Announcement.find({ courseCode }).sort({createdAt: -1});
-        // .sort({ createdAt: -1 });
+      // Step 2: Find comments related to these announcements
+      const announcementIds = announcements.map(announcement => announcement._id);
+      const comments = await Comment.find({ announcementId: { $in: announcementIds } });
   
-      if (!courseAnnouncements.length) {
-        return res.status(404).json({ message: 'No announcements found for this course' });
-      }
+      // Step 3: Attach comments to their corresponding announcements
+      const announcementsWithComments = announcements.map(announcement => ({
+        ...announcement._doc, // Spread announcement data
+        comments: comments.filter(comment => comment.announcementId.equals(announcement._id)) // Attach comments
+      }));
   
-      // Return the announcements in the response
-      res.status(200).json({
-        message: 'Course announcements retrieved successfully',
-        announcements: courseAnnouncements,
-      });
-    } catch (err) {
-      res.status(500).json({ message: 'Failed to retrieve course announcements', error: err.message });
+      res.json({ announcements: announcementsWithComments });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
     }
   },
 
