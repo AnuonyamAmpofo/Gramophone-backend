@@ -16,6 +16,7 @@ router.put('/reset-password/:studentID', StudentController.resetPassword);
 router.get('/student-info', StudentController.studentInfo);
 router.get('/courses', StudentController.studentCourses);
 router.get('/allannouncements', StudentController.getAllCourseAnnouncements);
-router.get('/courses/:courseCode/getcourseannouncements',StudentController.getCourseAnnouncements)
+router.get('/courses/:courseCode/getcourseannouncements',StudentController.getCourseAnnouncements);
+router.get('/comments', StudentController.getComments);
 
 module.exports = router;

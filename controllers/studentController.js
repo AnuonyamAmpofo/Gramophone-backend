@@ -2,6 +2,7 @@ const Student = require('../models/Student');
 const Announcement = require('../models/Announcement');
 const Course = require('../models/Course');
 const Instructor = require('../models/Instructor');
+const Comment = require('../models/Comment');
 const bcrypt = require('bcrypt');
 
 const StudentController = {
@@ -61,7 +62,37 @@ const StudentController = {
       res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
     }
   },  
+  getComments: async (req, res) => {
+    try {
+        const studentID = req.user.sp_userId;
+        console.log(`Fetching comments for studentID: ${studentID}`);
 
+        // Fetch all comments related to the student, sorted by date descending
+        const comments = await Comment.find({ studentID }).sort({ date: -1 });
+        console.log(`Found ${comments.length} comment(s) for studentID: ${studentID}`);
+
+        const allComments = [
+          ...comments.map(comment => ({
+            courseCode: comment.courseCode,
+            commentID: comment._id,
+            content: comment.comment,
+            studentID: comment.studentID,
+            studentName: comment.studentName,
+            date: new Date(comment.datePosted).toLocaleString(),
+            instructorName: comment.instructorName,
+            instructorID: comment.instructorID
+
+          }))
+        ]
+        res.status(200).json({
+            message: 'Comments retrieved successfully',
+            allComments
+        });
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        res.status(500).json({ message: 'Server error' });
+    }
+},
 
   // View course-specific announcements
   viewCourseAnnouncements: async (req, res) => {
