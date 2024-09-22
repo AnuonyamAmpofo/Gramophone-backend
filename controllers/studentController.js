@@ -68,31 +68,30 @@ const StudentController = {
         console.log(`Fetching comments for studentID: ${studentID}`);
 
         // Fetch all comments related to the student, sorted by date descending
-        const comments = await Comment.find({ studentID }).sort({ date: -1 });
+        const comments = await Comment.find({ studentID }).sort({ datePosted: -1 }); // Ensure you're sorting by the correct field
         console.log(`Found ${comments.length} comment(s) for studentID: ${studentID}`);
 
-        const allComments = [
-          ...comments.map(comment => ({
+        const allComments = comments.map(comment => ({
             courseCode: comment.courseCode,
             commentID: comment._id,
             content: comment.comment,
             studentID: comment.studentID,
             studentName: comment.studentName,
-            date: new Date(comment.datePosted).toLocaleString(),
+            date: new Date(comment.datePosted).toLocaleString(), // Adjust according to your field
             instructorName: comment.instructorName,
             instructorID: comment.instructorID
+        }));
 
-          }))
-        ]
         res.status(200).json({
             message: 'Comments retrieved successfully',
-            allComments
+            comments: allComments // Ensure you return `comments` as the key
         });
     } catch (error) {
         console.error("Error fetching comments:", error);
         res.status(500).json({ message: 'Server error' });
     }
 },
+
 
   // View course-specific announcements
   viewCourseAnnouncements: async (req, res) => {
