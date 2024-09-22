@@ -29,13 +29,20 @@ router.post('/instructors/courses/:courseCode/student/:studentID/comment', async
 // GET route for retrieving comments for a course and student
 router.get('/instructors/courses/:courseCode/student/:studentID/comments', async (req, res) => {
     try {
-        const { courseCode, studentID } = req.params;
+        const studentID = req.user.studentID;
+        console.log(`Fetching comments for studentID: ${studentID}`);
 
-        const comments = await Comment.find({ courseCode, studentID });
+        // Fetch all comments related to the student, sorted by date descending
+        const comments = await Comment.find({ studentID }).sort({ date: -1 });
+        console.log(`Found ${comments.length} comments for studentID: ${studentID}`);
 
-        res.status(200).json(comments);
-    } catch (err) {
-        res.status(500).json({ message: 'Failed to retrieve comments', error: err.message });
+        res.status(200).json({
+            message: 'Comments retrieved successfully',
+            comments
+        });
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
