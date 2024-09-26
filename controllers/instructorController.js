@@ -308,6 +308,55 @@ editAnnouncement: async (req, res) => {
     }
 },
 
+getAllAnnouncements: async(req, res) => {
+  try {
+    const instructorID = req.user.sp_userId; // Assuming the user object is attached via middleware
+
+    // 1. Fetch all courses for the instructor and populate the announcements field
+    const courses = await Course.find({ instructorID }).populate('announcements'); // Make sure to populate announcements
+
+    // 2. Extract course-specific announcements
+    const courseAnnouncements = courses.reduce((acc, course) => {
+      if (course.announcements) {
+        acc.push(...course.announcements.map(announcement => ({
+          courseCode: course.courseCode,
+          announcementID: announcement._id,
+          title: announcement.title,      // Accessing populated title
+          content: announcement.content,  // Accessing populated content
+          datePosted: announcement.datePosted,  // Accessing populated datePosted
+        })));
+      }
+      return acc;
+    }, []);
+
+    // 3. Fetch global announcements (those posted by admin)
+    const adminAnnouncements = await Announcement.find({ courseCode: null });
+
+    // 4. Combine course-specific announcements with admin announcements
+    const allAnnouncements = [
+      ...adminAnnouncements.map(announcement => ({
+        courseCode: "Admin",
+        announcementID: announcement._id,
+        title: announcement.title,         // Accessing admin announcement title
+        content: announcement.content,     // Accessing admin announcement content
+        datePosted: announcement.datePosted, // Accessing admin announcement datePosted
+      })),
+      ...courseAnnouncements
+    ];
+
+    if (allAnnouncements.length === 0) {
+      return res.status(404).json({ message: 'No announcements available.' });
+    }
+
+    // 5. Return all announcements (both course-specific and admin announcements)
+    res.status(200).json({ announcements: allAnnouncements });
+  } catch (error) {
+    console.error('Error fetching announcements:', error);
+    res.status(500).json({ error: 'An error occurred while fetching announcements.' });
+  }
+},
+
+
 
   getStudentInfo: async(req,res)=> {
     try {
