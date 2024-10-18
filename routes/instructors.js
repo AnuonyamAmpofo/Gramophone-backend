@@ -40,3 +40,4 @@ router.post('/courses/:courseCode/student/:studentID/comments', InstructorContro
 router.get('/courses/students/:studentID', InstructorController.getStudentInfo), 
 router.put('/reset-password/:instructorID', InstructorController.resetPassword);
 module.exports = router;
+

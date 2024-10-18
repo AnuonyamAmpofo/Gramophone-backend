@@ -7,15 +7,31 @@ const upload = multer();
 
 const AdminController = {
   addStudent: async (req, res) => {
-    const { studentID, studentName, email, contact, instrument, schedule } = req.body;
+    const { studentName, email, contact, instrument, schedule } = req.body;
+  
     try {
-      const newStudent = new Student({ studentID, studentName, email, contact, instrument, schedule });
+      // Find the student with the largest studentID
+      const lastStudent = await Student.findOne().sort({ studentID: -1 }).limit(1);
+  
+      // Generate the new studentID by incrementing the highest existing studentID
+      const newStudentID = lastStudent ? (parseInt(lastStudent.studentID, 10) + 1).toString().padStart(4, '0') : '0001';
+  
+      // Create the new student with the generated ID
+      const newStudent = new Student({
+        studentID: newStudentID,
+        studentName,
+        email,
+        contact,
+        instrument,
+        schedule
+      });
+  
       await newStudent.save();
       res.status(201).json({ message: 'Student added successfully' });
     } catch (err) {
       res.status(500).json({ message: 'Failed to add student', error: err.message });
     }
-  },
+  },  
   updateStudent: async (req, res) => {
     const { studentID } = req.params;
     const updateData = req.body;
