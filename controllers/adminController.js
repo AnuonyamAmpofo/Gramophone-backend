@@ -77,6 +77,25 @@ const AdminController = {
       res.status(500).json({ message: 'Failed to delete student', error: err.message });
     }
   },
+  findInstructorInstrument: async (req, res) => {
+    const { instrument } = req.query;
+  
+    try {
+      // Find instructors whose instrument matches the provided value
+      const instructors = await Instructor.find({ instrument });
+  
+      // If no instructors found, send a 404 response
+      if (instructors.length === 0) {
+        return res.status(404).json({ message: "No instructors found for this instrument" });
+      }
+  
+      // Send the instructors in the response
+      return res.status(200).json(instructors);
+    } catch (error) {
+      console.error("Error fetching instructors:", error);
+      res.status(500).json({ message: "Server error. Could not fetch instructors." });
+    }
+  },
   addInstructor: async (req, res) => {
     const { instructorID, name, email, contact, instrument, schedule } = req.body;
     try {
