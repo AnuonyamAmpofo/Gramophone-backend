@@ -17,6 +17,7 @@ router.put('/students/:studentID', AdminController.updateStudent);
 router.get('/students', AdminController.viewStudents);
 router.get('/students/:studentID', AdminController.viewStudent);
 router.delete('/students/:studentID', AdminController.deleteStudent);
+// router.post('/students/')
 // router.post('/assignInstructor', AdminController.assignInstructor);
 
 
@@ -38,7 +39,7 @@ router.put('/courses/:courseID', AdminController.updateCourse);
 router.delete('/courses/:courseID', AdminController.deleteCourse);
 router.get('/courses', AdminController.viewCourses);
 router.get('/courses/instrument/:instrument', AdminController.viewCoursesByInstrument);
-router.post('/courses/assign-student', AdminController.assignStudentToCourse);
+router.post('/courses/assign-student', AdminController.assignStudent);
 router.post('/courses/assign-student-multiple', AdminController.assignStudentToCourses);
 
 module.exports = router;

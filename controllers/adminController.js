@@ -77,6 +77,42 @@ const AdminController = {
       res.status(500).json({ message: 'Failed to delete student', error: err.message });
     }
   },
+  assignStudent: async (req, res) => {
+    const { studentID, instrument, instructorID, day } = req.body;
+  
+    if (!studentID || !instrument || !instructorID || !day) {
+      return res.status(400).send({ error: 'Missing required fields' });
+    }
+  
+    try {
+      // Find the course with matching day, instrument, and instructorID
+      const course = await Course.findOne({ day, instrument, instructorID });
+  
+      if (!course) {
+        return res.status(404).send({ error: 'Course not found' });
+      }
+  
+      // Check if the student is already in the course
+      const existingSession = course.sessions.find(session => session.studentID === studentID);
+      if (existingSession) {
+        return res.status(400).send({ error: 'Student is already assigned to this course' });
+      }
+  
+      // Add the student to the course's sessions array
+      course.sessions.push({
+        studentID,
+        time: new Date().toISOString(),  // You can customize how the time is added
+      });
+  
+      // Save the updated course
+      await course.save();
+  
+      res.status(200).send({ message: 'Student assigned successfully' });
+    } catch (error) {
+      console.error("Error assigning student:", error);
+      res.status(500).send({ error: 'Failed to assign student' });
+    }
+  },
   findInstructorInstrument: async (req, res) => {
     console.log("Instructor find endpoint hit");
     const instrument = req.query.instrument;
