@@ -70,7 +70,7 @@ const AdminController = {
     try {
       const deletedStudent = await Student.findOneAndDelete({ studentID });
       if (!deletedStudent) {
-        return res.status(404).json({ message: 'Student not found' });
+        return res.status(404).json({ message: 'Student is not found' });
       }
       res.status(200).json({ message: 'Student deleted successfully' });
     } catch (err) {
@@ -78,24 +78,22 @@ const AdminController = {
     }
   },
   findInstructorInstrument: async (req, res) => {
-    const { instrument } = req.query;
-  
-    try {
-      // Find instructors whose instrument matches the provided value
-      const instructors = await Instructor.find({ instrument });
-  
-      // If no instructors found, send a 404 response
-      if (instructors.length === 0) {
-        return res.status(404).json({ message: "No instructors found for this instrument" });
-      }
-  
-      // Send the instructors in the response
-      return res.status(200).json(instructors);
-    } catch (error) {
-      console.error("Error fetching instructors:", error);
-      res.status(500).json({ message: "Server error. Could not fetch instructors." });
+    console.log("Instructor find endpoint hit");
+    const instrument = req.query.instrument;
+    
+    if (!instrument) {
+        return res.status(400).send({ error: 'Instrument is required' });
     }
-  },
+    
+    try {
+        const instructors = await Instructor.find({ instrument });
+        console.log("Instructors found:", instructors);
+        res.json(instructors);
+    } catch (error) {
+        console.error("Error fetching instructors:", error);
+        res.status(500).send({ error: 'Failed to fetch instructors' });
+    }
+},
   addInstructor: async (req, res) => {
     const { instructorID, name, email, contact, instrument, schedule } = req.body;
     try {

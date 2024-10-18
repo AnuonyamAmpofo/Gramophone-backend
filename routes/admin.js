@@ -26,7 +26,7 @@ router.put('/instructors/:instructorID', AdminController.updateInstructor);
 router.get('/instructors', AdminController.viewInstructors);
 router.get('/instructors/:instructorID', AdminController.viewInstructor);
 router.delete('/instructors/:instructorID', AdminController.deleteInstructor);
-router.get('/students/instructor', AdminController.findInstructorInstrument);
+router.get('/student/instructor-find', AdminController.findInstructorInstrument);
 
 // Announcement routes
 router.post('/announcements', AdminController.addAnnouncement);
