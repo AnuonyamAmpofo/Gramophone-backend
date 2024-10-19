@@ -17,6 +17,7 @@ router.put('/students/:studentID', AdminController.updateStudent);
 router.get('/students', AdminController.viewStudents);
 router.get('/students/:studentID', AdminController.viewStudent);
 router.delete('/students/:studentID', AdminController.deleteStudent);
+router.get('/courses/instructor/:instructorID', AdminController.findCourseInstructorDayInstrument);
 // router.post('/students/')
 // router.post('/assignInstructor', AdminController.assignInstructor);
 

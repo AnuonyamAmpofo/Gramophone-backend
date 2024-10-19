@@ -113,6 +113,27 @@ const AdminController = {
       res.status(500).send({ error: 'Failed to assign student' });
     }
   },
+
+  findCourseInstructorDayInstrument: async (req, res) => {
+    const { instructorID } = req.params;
+    const { day, instrument } = req.query;
+  
+    try {
+      const course = await Course.findOne({
+        instructorID,
+        day,
+        instrument
+      });
+  
+      if (!course) {
+        return res.status(404).json({ message: 'Course not found' });
+      }
+  
+      res.status(200).json(course);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
   findInstructorInstrument: async (req, res) => {
     console.log("Instructor find endpoint hit");
     const instrument = req.query.instrument;
