@@ -87,7 +87,7 @@ const AdminController = {
     }
   },
   assignStudent: async (req, res) => {
-    const { studentID, instrument, instructorID, day, time} = req.body;
+    const { studentName, studentID, instrument, instructorID, day, time} = req.body;
   
     // Log the incoming request parameters
     console.log("Received parameters:", { studentID, instrument, instructorID, day });
