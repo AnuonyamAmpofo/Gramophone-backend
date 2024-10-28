@@ -41,6 +41,7 @@ router.delete('/courses/:courseID', AdminController.deleteCourse);
 router.get('/courses', AdminController.viewCourses);
 router.get('/courses/instrument/:instrument', AdminController.viewCoursesByInstrument);
 router.post('/courses/assign-student', AdminController.assignStudent);
-router.post('/courses/assign-student-multiple', AdminController.assignStudentToCourses);
+
+// router.post('/courses/assign-student-multiple', AdminController.assignStudentToCourses);
 
 module.exports = router;

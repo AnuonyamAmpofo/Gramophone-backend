@@ -160,6 +160,7 @@ const AdminController = {
         res.status(500).send({ error: 'Failed to fetch instructors' });
     }
 },
+
   addInstructor: async (req, res) => {
     const { instructorID, name, email, contact, instrument, schedule } = req.body;
     try {
