@@ -121,7 +121,7 @@ const AdminController = {
       course.sessions.push({
         studentID,
         studentName,
-        time: formattedTime  // You can customize how the time is added
+        time  // You can customize how the time is added
       });
   
       // Save the updated course
