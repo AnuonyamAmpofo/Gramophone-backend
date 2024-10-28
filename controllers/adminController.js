@@ -80,21 +80,29 @@ const AdminController = {
   assignStudent: async (req, res) => {
     const { studentID, instrument, instructorID, day } = req.body;
   
+    // Log the incoming request parameters
+    console.log("Received parameters:", { studentID, instrument, instructorID, day });
+  
     if (!studentID || !instrument || !instructorID || !day) {
       return res.status(400).send({ error: 'Missing required fields' });
     }
   
     try {
+      // Log the query criteria to ensure it matches what you expect
+      console.log("Searching for course with criteria:", { day, instrument, instructorID });
+  
       // Find the course with matching day, instrument, and instructorID
       const course = await Course.findOne({ day, instrument, instructorID });
   
       if (!course) {
+        console.log("Course not found with provided criteria.");  // Log if course is not found
         return res.status(404).send({ error: 'Course not found' });
       }
   
       // Check if the student is already in the course
       const existingSession = course.sessions.find(session => session.studentID === studentID);
       if (existingSession) {
+        console.log("Student already assigned to this course.");
         return res.status(400).send({ error: 'Student is already assigned to this course' });
       }
   
@@ -113,6 +121,7 @@ const AdminController = {
       res.status(500).send({ error: 'Failed to assign student' });
     }
   },
+  
 
   findCourseInstructorDayInstrument: async (req, res) => {
     const { instructorID } = req.params;
