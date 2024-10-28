@@ -78,12 +78,12 @@ const AdminController = {
     }
   },
   assignStudent: async (req, res) => {
-    const { studentID, instrument, instructorID, day } = req.body;
+    const { studentID, instrument, instructorID, day, time} = req.body;
   
     // Log the incoming request parameters
     console.log("Received parameters:", { studentID, instrument, instructorID, day });
   
-    if (!studentID || !instrument || !instructorID || !day) {
+    if (!studentID || !instrument || !instructorID || !day || !time) {
       return res.status(400).send({ error: 'Missing required fields' });
     }
   
@@ -109,7 +109,7 @@ const AdminController = {
       // Add the student to the course's sessions array
       course.sessions.push({
         studentID,
-        time: new Date().toISOString(),  // You can customize how the time is added
+        time  // You can customize how the time is added
       });
   
       // Save the updated course
