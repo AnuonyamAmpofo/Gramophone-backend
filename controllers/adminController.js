@@ -120,6 +120,7 @@ const AdminController = {
       // Add the student to the course's sessions array
       course.sessions.push({
         studentID,
+        studentName,
         time: formattedTime  // You can customize how the time is added
       });
   
