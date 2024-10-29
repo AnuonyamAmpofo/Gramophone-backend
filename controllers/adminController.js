@@ -9,7 +9,7 @@ const formatTimeTo12Hour = (time) => {
   const [hour, minute] = time.split(":");
   let hour12 = ((+hour + 11) % 12) + 1;
   const ampm = +hour >= 12 ? "PM" : "AM";
-  return `${hour12}:${minute} ${ampm}`;
+  return `${hour12}:${minute}${ampm}`;
 };
 
 const AdminController = {
@@ -124,6 +124,17 @@ const AdminController = {
   
       // Save the updated course
       await course.save();
+      const student = await Student.findById(studentID);
+        if (student) {
+          const existingSchedule = student.schedule.find(
+            (schedule) => schedule.day === day && schedule.time === formattedTime
+          );
+
+          if (!existingSchedule) {
+            student.schedule.push({ day, time: formattedTime });
+            await student.save();
+          }
+        }
   
       res.status(200).send({ message: 'Student assigned successfully' });
     } catch (error) {
