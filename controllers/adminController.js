@@ -124,17 +124,35 @@ const AdminController = {
   
       // Save the updated course
       await course.save();
+
       const student = await Student.findById(studentID);
+    
+        // Log the student object
+        console.log("Student found:", student);
+        
         if (student) {
+          // Log the current schedule
+          console.log("Current Student Schedule:", student.schedule);
+
           const existingSchedule = student.schedule.find(
             (schedule) => schedule.day === day && schedule.time === formattedTime
           );
 
           if (!existingSchedule) {
+            // Log the addition to the schedule
+            console.log(`Adding to schedule: Day: ${day}, Time: ${formattedTime}`);
             student.schedule.push({ day, time: formattedTime });
             await student.save();
+          } else {
+            console.log("Schedule entry already exists, not adding.");
           }
+
+          // Log the updated schedule
+          console.log("Updated Student Schedule:", student.schedule);
+        } else {
+          console.log("No student found with the provided ID.");
         }
+
   
       res.status(200).send({ message: 'Student assigned successfully' });
     } catch (error) {
