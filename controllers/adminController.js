@@ -5,14 +5,12 @@ const Course = require('../models/Course');
 const multer = require('multer');
 const upload = multer();
 
-function formatTimeTo12Hour(time) {
-  const [hours, minutes] = time.split(':').map(Number);
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const formattedHours = hours % 12 || 12; // Convert 0 or 12 to 12 for 12-hour format
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes; // Pad minutes
-
-  return `${formattedHours}:${formattedMinutes} ${ampm}`;
-}
+const formatTimeTo12Hour = (time) => {
+  const [hour, minute] = time.split(":");
+  let hour12 = ((+hour + 11) % 12) + 1;
+  const ampm = +hour >= 12 ? "PM" : "AM";
+  return `${hour12}:${minute} ${ampm}`;
+};
 
 const AdminController = {
   addStudent: async (req, res) => {
@@ -121,7 +119,7 @@ const AdminController = {
       course.sessions.push({
         studentID,
         studentName,
-        time  // You can customize how the time is added
+        time: formattedTime,   // You can customize how the time is added
       });
   
       // Save the updated course
