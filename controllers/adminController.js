@@ -125,7 +125,7 @@ const AdminController = {
       // Save the updated course
       await course.save();
 
-      const student = await Student.findById(studentID);
+      const student = await Student.findOne({studentID});
     
         // Log the student object
         console.log("Student found:", student);
