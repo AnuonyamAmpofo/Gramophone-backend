@@ -74,16 +74,37 @@ const AdminController = {
   },
   deleteStudent: async (req, res) => {
     const { studentID } = req.params;
+
     try {
-      const deletedStudent = await Student.findOneAndDelete({ studentID });
-      if (!deletedStudent) {
-        return res.status(404).json({ message: 'Student is not found' });
-      }
-      res.status(200).json({ message: 'Student deleted successfully' });
+        // Step 1: Delete the student document
+        const deletedStudent = await Student.findOneAndDelete({ studentID });
+        if (!deletedStudent) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        // Step 2: Find all courses referencing the student in their sessions
+        const coursesWithStudent = await Course.find({ "sessions.studentID": studentID });
+
+        // Log the courses found
+        console.log("Courses containing the student:", coursesWithStudent);
+
+        // Step 3: Remove the student's sessions from all matching courses
+        const updateCourses = await Course.updateMany(
+            { "sessions.studentID": studentID }, // Match courses where the session contains the studentID
+            { $pull: { sessions: { studentID } } } // Remove all matching sessions
+        );
+
+        // Step 4: Respond with a success message
+        res.status(200).json({
+            message: 'Student and associated sessions deleted successfully',
+            deletedStudent,
+            updatedCourses: updateCourses.modifiedCount, // Number of courses updated
+            coursesWithStudent // Optional: include the courses in the response
+        });
     } catch (err) {
-      res.status(500).json({ message: 'Failed to delete student', error: err.message });
+        res.status(500).json({ message: 'Failed to delete student and associated sessions', error: err.message });
     }
-  },
+},
   assignStudent: async (req, res) => {
     const { studentName, studentID, instrument, instructorID, day, time} = req.body;
   
