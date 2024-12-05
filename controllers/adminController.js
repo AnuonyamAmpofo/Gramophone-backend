@@ -400,52 +400,7 @@ const AdminController = {
       res.status(500).json({ message: 'Failed to retrieve courses', error: err.message });
     }
   },
-  assignStudentToCourse: [
-    upload.none(),
-    async (req, res) => {
-    const { courseCode, studentID, time } = req.body;
-
-    try {
-      // Find the course by courseCode
-      const course = await Course.findOne({ courseCode });
-      if (!course) {
-        return res.status(404).json({ message: 'Course not found' });
-      }
-
-      // Find the student by studentID
-      const student = await Student.findOne({ studentID });
-      if (!student) {
-        return res.status(404).json({ message: 'Student not found' });
-      }
-
-      // Add the student session to the course
-      course.sessions.push({ studentID: student.studentID, studentName: student.studentName, time });
-
-      // Save the updated course
-      await course.save();
-
-      // Prepare the response with student names
-      const responseSessions = course.sessions.map(session => ({
-        studentID: session.studentID,
-        studentName: session.studentName,
-        time: session.time
-      }));
-
-      res.status(200).json({
-        message: 'Student assigned to course successfully',
-        course: {
-          courseCode: course.courseCode,
-          instrument: course.instrument,
-          day: course.day,
-          instructorID: course.instructorID, // Assuming instructorID is already populated as ID
-          sessions: responseSessions
-        }
-      });
-    } catch (err) {
-      res.status(500).json({ message: 'Failed to assign student to course', error: err.message });
-    }
   
-  }],
   //Assign to multiple courses
     assignStudentToCourses: async (req, res) => {
     const { studentID, courses } = req.body;
