@@ -222,9 +222,25 @@ const AdminController = {
 },
 
   addInstructor: async (req, res) => {
-    const { instructorID, name, email, contact, instrument, schedule } = req.body;
+    const { name, email, contact, instrument, schedule } = req.body;
+  
     try {
-      const newInstructor = new Instructor({ instructorID, name, email, contact, instrument, schedule });
+      // Find the student with the largest studentID
+      const lastInstructor = await Instructor.findOne().sort({ instructorID: -1 }).limit(1);
+  
+      // Generate the new studentID by incrementing the highest existing studentID
+      const newInstructorID = lastInstructor ? (parseInt(lastInstructor.instructorID, 10) + 1).toString().padStart(4, '0') : '0001';
+  
+      // Create the new student with the generated ID
+      const newInstructor = new Instructor({
+        instructorID: newInstructorID,
+        name,
+        email,
+        contact,
+        instrument,
+        schedule
+      });
+  
       await newInstructor.save();
       res.status(201).json({ message: 'Instructor added successfully' });
     } catch (err) {
