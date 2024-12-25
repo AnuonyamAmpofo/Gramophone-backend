@@ -286,17 +286,17 @@ const AdminController = {
         // Step 1: Delete the student document
         const deletedInstructor = await Instructor.findOneAndDelete({ instructorID });
         if (!deletedInstructor) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ message: 'Instructor not found' });
         }
 
         // Step 2: Find all courses referencing the student in their sessions
-        const coursesWithInstructor = await Course.find({ "instructorID": instructorID });
+        // const coursesWithInstructor = await Course.find({ "instructorID": instructorID });
 
-        // Log the courses found
-        console.log("Courses for the instructor:", coursesWithInstructor);
+        
+        // console.log("Courses for the instructor:", coursesWithInstructor);
 
-        // Step 3: Remove the student's sessions from all matching courses
-        await Course.deleteMany({ "instructorID": instructorID });
+        
+        // await Course.deleteMany({ "instructorID": instructorID });
 
         // Step 4: Respond with a success message
         res.status(200).json({
