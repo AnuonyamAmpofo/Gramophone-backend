@@ -237,8 +237,7 @@ const AdminController = {
         name,
         email,
         contact,
-        instrument,
-        schedule
+        instrument
       });
   
       await newInstructor.save();
