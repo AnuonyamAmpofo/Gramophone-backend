@@ -303,7 +303,7 @@ const AdminController = {
             message: 'Instructor and associated courses deleted successfully',
             deletedInstructor,
             updatedCourses: updateCourses.modifiedCount,
-            coursesWithInstrutor
+            coursesWithInstructor
         });
     } catch (err) {
         res.status(500).json({ message: 'Failed to delete instructor and associated courses', error: err.message });
