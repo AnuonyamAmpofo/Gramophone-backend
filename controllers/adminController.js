@@ -268,7 +268,7 @@ const AdminController = {
     }
   },
   viewInstructor: async (req, res) => {
-    const { instructorID } = req.body;
+    const { instructorID } = req.params;
     try {
       const instructor = await Instructor.findOne({ instructorID });
       if (!instructor) {
