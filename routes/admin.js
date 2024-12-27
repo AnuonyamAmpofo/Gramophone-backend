@@ -34,7 +34,19 @@ router.get('/student/instructor-find', AdminController.findInstructorInstrument)
 router.post('/announcements', AdminController.addAnnouncement);
 router.get('/announcements', AdminController.viewAnnouncements);
 
+
+router.get('/courses/:courseCode/announcements', AdminController.getCourseAnnouncements);
+// Route to post an announcement in a particular course
+router.post('/courses/:courseCode/announcement', AdminController.postAnnouncement);
+router.get('/announcement/getannouncements', AdminController.getAllAnnouncements),
+
+router.delete('/courses/:courseCode/announcement/:announcementId', AdminController.deleteAnnouncement);
+
+router.patch('/courses/:courseCode/announcement/:announcementId', AdminController.editAnnouncement);
+
 // Course Routes
+
+router.get('/courses/:courseCode', AdminController.viewCourseDetail);
 router.post('/courses', AdminController.createCourse);
 router.put('/courses/:courseID', AdminController.updateCourse);
 router.delete('/courses/:courseID', AdminController.deleteCourse);
