@@ -2,6 +2,8 @@ const Student = require('../models/Student');
 const Instructor = require('../models/Instructor');
 const Announcement = require('../models/Announcement');
 const Course = require('../models/Course');
+const Comment = require('../models/Comment');
+const Admin = require('../models/Admin');
 const multer = require('multer');
 const upload = multer();
 
@@ -679,7 +681,7 @@ getAllAnnouncements: async(req, res) => {
 viewCourseDetail: async (req, res) => {
   try {
     const { courseCode } = req.params; // Extract course code from the URL params
-    const instructorID = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
+    const username = req.user.sp_userId; // Assuming the instructor's ID is stored in req.user
 
     // Find the course by courseCode and instructorID
     const course = await Course.findOne({ courseCode });
@@ -703,7 +705,41 @@ viewCourseDetail: async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
   }
-}
+}, 
+  
+    postCommentForStudent: async (req, res) => {
+      try {
+          const { courseCode, studentID } = req.params;
+          const { comment } = req.body;
+          const username = req.user.sp_userId; // Assume this is set from your middleware
+          
+          const admin = await Admin.findOne({username});
+          if (!admin){
+            return res.status(404).json({message: "Admin Not Found"})
+          }
+
+          const student = await Student.findOne({studentID});
+          if (!student){
+            return res.status(404).json({message: "Student Not Found"})
+          }
+          
+          // Create a new comment
+          const newComment = new Comment({
+              courseCode,
+              studentID,
+              studentName: student.studentName,
+            
+              instructorID: username,
+              comment,
+          });
+
+          await newComment.save();
+
+          res.status(200).json({ message: 'Comment added successfully' });
+      } catch (err) {
+          res.status(500).json({ message: 'Failed to add comment', error: err.message });
+      }
+    },
 };
 
 module.exports = AdminController;

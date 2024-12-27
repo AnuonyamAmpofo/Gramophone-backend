@@ -44,6 +44,8 @@ router.delete('/courses/:courseCode/announcement/:announcementId', AdminControll
 
 router.patch('/courses/:courseCode/announcement/:announcementId', AdminController.editAnnouncement);
 
+router.post('/courses/:courseCode/student/:studentID/comments', AdminController.postCommentForStudent);
+
 // Course Routes
 
 router.get('/courses/:courseCode', AdminController.viewCourseDetail);
