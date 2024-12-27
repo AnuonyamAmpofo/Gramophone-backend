@@ -707,7 +707,23 @@ viewCourseDetail: async (req, res) => {
   }
 }, 
   
-    postCommentForStudent: async (req, res) => {
+getStudentInfo: async(req,res)=> {
+  try {
+    const { studentID } = req.params;
+    const student = await Student.findOne({ studentID });
+
+    res.status(200).json({
+      studentName: student.studentName,
+      email: student.email,
+      contact: student.contact,
+
+    });
+  }
+  catch(err) {
+    console.error("Failed to get student details", err)
+  }
+},
+      postCommentForStudent: async (req, res) => {
       try {
           const { courseCode, studentID } = req.params;
           const { comment } = req.body;
