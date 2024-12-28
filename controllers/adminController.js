@@ -521,60 +521,70 @@ getAllAnnouncements: async(req, res) => {
 
   //COURSE CONTROLLERS
   createCourse: async (req, res) => {
-    const { courseCode, instrument, day, instructorID, sessions } = req.body;
+    const { instrument, instructorID, instructorName, day } = req.body;
+
+  
+  if (!instrument || !instructorID || !instructorName || !day) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
 
   try {
-    // Find the instructor by instructorID
-    const instructor = await Instructor.findOne({ instructorID });
-    if (!instructor) {
-      return res.status(404).json({ message: 'Instructor not found' });
+  
+    const dayMapping = {
+      Monday: 1,
+      Tuesday: 2,
+      Wednesday: 3,
+      Thursday: 4,
+      Friday: 5,
+      Saturday: 6,
+      
+    };
+
+    const dayNumber = dayMapping[day];
+    if (!dayNumber) {
+      return res.status(400).json({ error: "Invalid day provided." });
     }
 
-    // Validate the student IDs and fetch their details
-    const sessionDetails = [];
-    for (const session of sessions) {
-      const student = await Student.findOne({ studentID: session.studentID });
-      if (!student) {
-        return res.status(404).json({ message: `Student with ID ${session.studentID} not found` });
-      }
-      sessionDetails.push({
-        studentID: student.studentID,
-        studentName: student.studentName, // Adjust this according to your Student model field name
-        time: session.time
-      });
+    // Define courseCode prefixes based on instrument
+    const instrumentMapping = {
+      Saxophone: "Sax",
+      Violin: "Violin",
+      Viola: "Violin",
+      Cello: "Violin",
+      Strings: "Violin", // Grouped under Violin
+      // Add more mappings if needed
+    };
+
+    const coursePrefix = instrumentMapping[instrument] || instrument; // Default to instrument name
+    const instructorSuffix = instructorID.slice(-2); // Get last 2 digits of instructorID
+
+    // Generate courseCode: {Prefix}{DayNumber}{LastTwoDigitsOfInstructorID}
+    const courseCode = `${coursePrefix}${dayNumber}${instructorSuffix}`;
+
+    // Check if the course already exists (optional)
+    const existingCourse = await Course.findOne({ courseCode });
+    if (existingCourse) {
+      return res.status(400).json({ error: "Course already exists." });
     }
 
-    // Create the course
+    // Create the new course
     const newCourse = new Course({
       courseCode,
       instrument,
+      instructorID,
+      instructorName,
       day,
-      instructorID: instructor.instructorID,
-      instructorName: instructor.name, // Adjust this according to your Instructor model field name
-      sessions: sessionDetails,
+      sessions: [], 
+      announcements: [], 
     });
 
+   
     await newCourse.save();
 
-    // Populate the response with complete details
-    res.status(201).json({
-      message: 'Course created successfully',
-      course: {
-        courseCode: newCourse.courseCode,
-        instrument: newCourse.instrument,
-        day: newCourse.day,
-        instructorID: newCourse.instructorID,
-        instructorName: newCourse.instructorName,
-        sessions: newCourse.sessions.map(session => ({
-          studentID: session.studentID,
-          studentName: session.studentName,
-          time: session.time
-        })),
-        _id: newCourse._id,
-      }
-    });
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to create course', error: err.message });
+    res.status(201).json({ message: "Course added successfully.", course: newCourse });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error." });
   }
   },
   updateCourse: async (req, res) => {
