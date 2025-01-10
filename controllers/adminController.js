@@ -600,12 +600,19 @@ getAllAnnouncements: async(req, res) => {
     }
   },
   deleteCourse: async (req, res) => {
-    const { courseID } = req.params;
+    const { courseCode } = req.params;
+    const username = req.user.sp_userId;
+
+
     try {
-      const deletedCourse = await Course.findByIdAndDelete(courseID);
+      const deletedCourse = await Course.findByIdAndDelete(courseCode);
       if (!deletedCourse) {
         return res.status(404).json({ message: 'Course not found' });
       }
+
+      const deletedAnnouncements = await Announcement.find({ courseCode }).deleteMany();
+      const deletedComments = await Comment.find({ courseCode }).deleteMany();
+      
       res.status(200).json({ message: 'Course deleted successfully' });
     } catch (err) {
       res.status(500).json({ message: 'Failed to delete course', error: err.message });
