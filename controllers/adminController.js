@@ -551,12 +551,11 @@ getAllAnnouncements: async(req, res) => {
       Violin: "Violin",
       Viola: "Violin",
       Cello: "Violin",
-      Strings: "Violin", // Grouped under Violin
-      // Add more mappings if needed
+      Strings: "Violin", 
     };
 
-    const coursePrefix = instrumentMapping[instrument] || instrument; // Default to instrument name
-    const instructorSuffix = instructorID.slice(-2); // Get last 2 digits of instructorID
+    const coursePrefix = instrumentMapping[instrument] || instrument; 
+    const instructorSuffix = instructorID.slice(-2); 
 
     // Generate courseCode: {Prefix}{DayNumber}{LastTwoDigitsOfInstructorID}
     const courseCode = `${coursePrefix}${dayNumber}${instructorSuffix}`;
@@ -710,6 +709,7 @@ viewCourseDetail: async (req, res) => {
         studentName: session.studentName,
         time: session.time,
       })),
+      instructorName: course.instructorName,
       announcements: course.announcements, // Assuming announcements are embedded in the course model
     });
   } catch (err) {
