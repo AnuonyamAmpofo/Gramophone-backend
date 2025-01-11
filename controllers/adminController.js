@@ -747,6 +747,7 @@ viewCourseDetail: async (req, res) => {
         time: session.time,
       })),
       instructorName: course.instructorName,
+      instructorID: course.instructorID,
       instrument: course.instrument,
       announcements: course.announcements, // Assuming announcements are embedded in the course model
     });
