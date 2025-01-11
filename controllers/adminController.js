@@ -560,7 +560,7 @@ getAllAnnouncements: async(req, res) => {
     // Generate courseCode: {Prefix}{DayNumber}{LastTwoDigitsOfInstructorID}
     const courseCode = `${coursePrefix}${dayNumber}${instructorSuffix}`;
 
-    // Check if the course already exists (optional)
+    
     const existingCourse = await Course.findOne({ courseCode });
     if (existingCourse) {
       return res.status(400).json({ error: "Course already exists." });
@@ -590,7 +590,36 @@ getAllAnnouncements: async(req, res) => {
     const { courseCode } = req.params;
     const updateData = req.body;
     try {
-      const updatedCourse = await Course.findOneAndUpdate(courseCode, updateData, { new: true });
+      const dayMapping = {
+        Monday: 1,
+        Tuesday: 2,
+        Wednesday: 3,
+        Thursday: 4,
+        Friday: 5,
+        Saturday: 6,
+        
+      };
+  
+      const dayNumber = dayMapping[day];
+      if (!dayNumber) {
+        return res.status(400).json({ error: "Invalid day provided." });
+      }
+  
+      // Define courseCode prefixes based on instrument
+      const instrumentMapping = {
+        Saxophone: "Sax",
+        Violin: "Violin",
+        Viola: "Violin",
+        Cello: "Violin",
+        Strings: "Violin", 
+      };
+  
+      const coursePrefix = instrumentMapping[updateData.instrument] || updateData.instrument; 
+      const instructorSuffix = updateData.instructorID.slice(-2);
+
+      const newCourseCode = `${coursePrefix}${dayNumber}${instructorSuffix}`;
+
+      const updatedCourse = await Course.findOneAndUpdate(newCourseCode, ...updateData, { new: true });
       if (!updatedCourse) {
         return res.status(404).json({ message: 'Course not found' });
       }
@@ -718,6 +747,7 @@ viewCourseDetail: async (req, res) => {
         time: session.time,
       })),
       instructorName: course.instructorName,
+      instrument: course.instrument,
       announcements: course.announcements, // Assuming announcements are embedded in the course model
     });
   } catch (err) {
