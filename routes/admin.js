@@ -50,7 +50,7 @@ router.post('/courses/:courseCode/student/:studentID/comments', AdminController.
 
 router.get('/courses/:courseCode', AdminController.viewCourseDetail);
 router.post('/courses', AdminController.createCourse);
-router.put('/courses/:courseID', AdminController.updateCourse);
+router.put('/courses/:courseCode', AdminController.updateCourse);
 router.delete('/courses/:courseCode', AdminController.deleteCourse);
 router.get('/courses', AdminController.viewCourses);
 router.get('/courses/instrument/:instrument', AdminController.viewCoursesByInstrument);

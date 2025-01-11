@@ -587,10 +587,10 @@ getAllAnnouncements: async(req, res) => {
   }
   },
   updateCourse: async (req, res) => {
-    const { courseID } = req.params;
+    const { courseCode } = req.params;
     const updateData = req.body;
     try {
-      const updatedCourse = await Course.findByIdAndUpdate(courseID, updateData, { new: true });
+      const updatedCourse = await Course.findOneAndUpdate(courseCode, updateData, { new: true });
       if (!updatedCourse) {
         return res.status(404).json({ message: 'Course not found' });
       }
