@@ -589,8 +589,12 @@ getAllAnnouncements: async(req, res) => {
   updateCourse: async (req, res) => {
     const { courseCode } = req.params;
     const updateData = req.body;
+    const day = updateData.day;
+
+    console.log(day);
     try {
       const dayMapping = {
+
         Monday: 1,
         Tuesday: 2,
         Wednesday: 3,
@@ -619,7 +623,7 @@ getAllAnnouncements: async(req, res) => {
 
       const newCourseCode = `${coursePrefix}${dayNumber}${instructorSuffix}`;
 
-      const updatedCourse = await Course.findOneAndUpdate(newCourseCode, ...updateData, { new: true });
+      const updatedCourse = await Course.findOneAndUpdate({courseCode}, {courseCode: newCourseCode, ...updateData}, { new: true });
       if (!updatedCourse) {
         return res.status(404).json({ message: 'Course not found' });
       }
