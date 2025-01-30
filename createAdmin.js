@@ -6,12 +6,13 @@ require('dotenv').config();
 (async () => {
     await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-    const password = 'test password3'; // Replace with the actual password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const password = ''; // Replace with the actual password
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const admin = new Admin({
-        username: 'admin3',
-        password: hashedPassword
+        username: 'Ampofo',
+        password: hashedPassword,
+        name: 'Ampofo Amo-Mensah',
     });
 
     await admin.save();
