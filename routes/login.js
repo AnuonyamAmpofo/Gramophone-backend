@@ -40,11 +40,14 @@ router.post('/', async (req, res) => {
         }
 
         // Password verification
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log('Password mismatch');
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
+            console.log('Provided password:', password);
+            console.log('Stored hashed password:', user.password);
+
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                console.log('Password mismatch');
+                return res.status(401).json({ message: 'Invalid credentials' });
+            }
 
         // Generate token
         const tokenPayload = {

@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 
 // Example hashed password from MongoDB
-const hashedPassword = '$2b$10$5Pcfh9R0S06.vVGJ5oCFbeE8y5igily6O1BzwBvUjF.aW.Nz.ZQbq';
+const hashedPassword = '$2b$10$wnKExnxjv7YY1RCXd7HCP.3k9anCVAfaKID3DrSWaSxbAle74CHLi';
 
 // Password provided during login
-const providedPassword = 'Newpass3'; // Replace with the actual password
+const providedPassword = 'Ampofo1345'; 
 
 // Compare the provided password with the hashed password
 bcrypt.compare(providedPassword, hashedPassword, (err, isMatch) => {
@@ -16,6 +16,10 @@ bcrypt.compare(providedPassword, hashedPassword, (err, isMatch) => {
         console.log('Password mismatch');
     }
 });
+
+
+
+
 
 
 
