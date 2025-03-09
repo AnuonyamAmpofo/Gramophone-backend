@@ -1,35 +1,31 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
-const Student = require('../models/Student');
-const Instructor = require('../models/Instructor');
+const Student = require('../models/Student'); // Adjust the path as needed
+const Instructor = require('../models/Instructor'); // Adjust the path as needed
+require('dotenv').config();
 
-router.post('/', async (req, res) => {
-    const { username, password } = req.body; // No need to specify the role
+const router = express.Router();
+
+router.post('/login', async (req, res) => {
+    const { username, password } = req.body;
 
     try {
-        console.log('Login attempt:', { username });
+        let user;
+        let role;
+        let userName; 
 
-        let user, role, userName;
-
-        // Search across all roles
-        user = await Admin.findOne({ username });
+        // Check if user is a student
+        user = await Student.findOne({ studentID: username });
         if (user) {
-            role = 'admin';
-            userName = user.username; // Use the relevant property for Admin name or username
+            role = 'student';
+            userName = user.studentName;
         } else {
+            // Check if user is an instructor
             user = await Instructor.findOne({ instructorID: username });
             if (user) {
                 role = 'instructor';
-                userName = user.name; // Use the relevant property for Instructor name
-            } else {
-                user = await Student.findOne({ studentID: username });
-                if (user) {
-                    role = 'student';
-                    userName = user.studentName; // Use the relevant property for Student name
-                }
+                userName = user.instructorName;
             }
         }
 
@@ -40,14 +36,17 @@ router.post('/', async (req, res) => {
         }
 
         // Password verification
-            console.log('Provided password:', password);
-            console.log('Stored hashed password:', user.password);
+        console.log('Provided password:', password);
+        console.log('Stored hashed password:', user.password);
+        console.log('Retrieved password from DB:', user.password.trim());
 
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) {
-                console.log('Password mismatch');
-                return res.status(401).json({ message: 'Invalid credentials' });
-            }
+        const isMatch = await bcrypt.compare(password, user.password);
+        console.log('Password match result:', isMatch);
+
+        if (!isMatch) {
+            console.log('Password mismatch');
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
         // Generate token
         const tokenPayload = {

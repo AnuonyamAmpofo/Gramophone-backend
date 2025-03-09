@@ -5,6 +5,7 @@ const Course = require('../models/Course');
 const Comment = require('../models/Comment');
 const Admin = require('../models/Admin');
 const multer = require('multer');
+const bcrypt = require('bcrypt');
 const upload = multer();
 
 const formatTimeTo12Hour = (time) => {
@@ -517,7 +518,57 @@ getAllAnnouncements: async(req, res) => {
   }
 },
 
+//ADMIN CONTROLLERS
+addAdmin: async (req, res) => {
+  const { name, email, contact, instrument } = req.body;
 
+  try {
+    // Find the student with the largest studentID
+    const lastInstructor = await Instructor.findOne().sort({ instructorID: -1 }).limit(1);
+
+    // Generate the new studentID by incrementing the highest existing studentID
+    const newInstructorID = lastInstructor ? (parseInt(lastInstructor.instructorID, 10) + 1).toString().padStart(4, '0') : '0001';
+
+    // Create the new student with the generated ID
+    const newInstructor = new Instructor({
+      instructorID: newInstructorID,
+      name,
+      email,
+      contact,
+      instrument
+    });
+
+    await newInstructor.save();
+    res.status(201).json({ message: 'Instructor added successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to add instructor', error: err.message });
+  }
+},
+
+  resetPassword: async (req, res) => {
+      const { username } = req.params;
+      const { newPassword } = req.body;
+  
+      try {
+        // Find the admin by username
+        const admin = await Admin.findOne({ username });
+        if (!admin) {
+          return res.status(404).json({ message: 'Admin not found' });
+        }
+  
+        // Hash the new password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+  
+        // Update the instructor's password
+        admin.password = hashedPassword;
+        await admin.save();
+  
+        res.status(200).json({ message: 'Password reset successfully' });
+      } catch (err) {
+        res.status(500).json({ message: 'Failed to reset password', error: err.message });
+      }
+    },
 
   //COURSE CONTROLLERS
   createCourse: async (req, res) => {
