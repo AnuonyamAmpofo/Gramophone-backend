@@ -8,13 +8,13 @@ const Admin = require('./models/Admin');
 dotenv.config();
 
 const createAdmin = async () => {
-    const username = "AmpTesting"; 
-    const password = "AmpTestPass1"; 
-    const name = "AmpTest"; 
+    const username = "Ampmusic"; 
+    const password = "AmpmusicPass1"; 
+    const name = "Ampmusic Amo-Mensah"; 
     try {
         
         await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log("✅ Connected to MongoDB");
+        console.log(" Connected to MongoDB");
 
 
         const existingAdmin = await Admin.findOne({ username });

@@ -46,8 +46,8 @@ router.post('/', async (req, res) => {
         }
 
         // Password verification
-        console.log('🔑 Provided password:', password);
-        console.log('🗄️ Stored hashed password:', user.password);
+        console.log(' Provided password:', password);
+        console.log('Stored hashed password:', user.password);
 
         const isMatch = await bcrypt.compare(password.trim(), user.password.trim());
 
@@ -61,12 +61,12 @@ router.post('/', async (req, res) => {
         // Generate token
         const tokenPayload = {
             userId: user._id,
-            sp_userId: role === 'student' ? user.studentID : role === 'instructor' ? user.instructorID : role === 'admin' ? user.username : null,
+            sp_userId: role === 'student' ? user.studentID : role === 'instructor' ? user.instructorID : role === 'admin' ? user.name : user.username,
             type: role
         };
 
         const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '4h' });
-        console.log('✅ Token generated:', token);
+        console.log('Token generated:', token);
 
         // Send response including the role, name, and token
         res.status(200).json({ 
