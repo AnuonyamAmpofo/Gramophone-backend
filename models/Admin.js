@@ -4,12 +4,12 @@ const bcrypt = require('bcrypt');
 const adminSchema = new mongoose.Schema({
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String,  },
 });
 
 adminSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
-        this.password = await bcrypt.hash(this.password, 12);
+        this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 });

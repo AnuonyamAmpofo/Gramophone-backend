@@ -550,24 +550,25 @@ addAdmin: async (req, res) => {
       const { newPassword } = req.body;
   
       try {
-        // Find the admin by username
         const admin = await Admin.findOne({ username });
+
         if (!admin) {
-          return res.status(404).json({ message: 'Admin not found' });
+            return res.status(404).json({ message: 'Admin not found' });
         }
-  
-        // Hash the new password
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-  
-        // Update the instructor's password
+
+        // ✅ Properly hash the new password before saving
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
         admin.password = hashedPassword;
         await admin.save();
-  
-        res.status(200).json({ message: 'Password reset successfully' });
-      } catch (err) {
-        res.status(500).json({ message: 'Failed to reset password', error: err.message });
-      }
+
+        console.log(`🔑 Hashed password saved for ${username}:`, hashedPassword);
+
+        res.status(200).json({ message: 'Password reset successfully!' });
+    } catch (error) {
+        console.error('Reset Password Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
     },
 
   //COURSE CONTROLLERS
