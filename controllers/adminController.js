@@ -315,7 +315,12 @@ const AdminController = {
   addAnnouncement: async (req, res) => {
     const { title, content } = req.body;
     try {
-      const newAnnouncement = new Announcement({ title, content, type: 'admin', datePosted: new Date() });
+      const newAnnouncement = new Announcement({
+        title,
+        content,
+        type: 'admin',
+        time: new Date(), // Ensure the time field is set to the current date and time
+      });
       await newAnnouncement.save();
       res.status(201).json({ message: 'Announcement added successfully' });
     } catch (err) {
