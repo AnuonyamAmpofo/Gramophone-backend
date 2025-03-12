@@ -315,7 +315,7 @@ const AdminController = {
   addAnnouncement: async (req, res) => {
     const { title, content } = req.body;
     try {
-      const newAnnouncement = new Announcement({ title, content });
+      const newAnnouncement = new Announcement({ title, content, type: 'admin', datePosted: new Date() });
       await newAnnouncement.save();
       res.status(201).json({ message: 'Announcement added successfully' });
     } catch (err) {
@@ -324,7 +324,7 @@ const AdminController = {
   },
   viewAnnouncements: async (req, res) => {
     try {
-      const announcements = await Announcement.find();
+      const announcements = await Announcement.find({ type:'admin' });
       res.status(200).json(announcements);
     } catch (err) {
       res.status(500).json({ message: 'Failed to retrieve announcements', error: err.message });
@@ -335,16 +335,16 @@ const AdminController = {
     try {
       const { courseCode } = req.params;
   
-      // Step 1: Find announcements for the course
+      
       const announcements = await Announcement.find({ courseCode });
   
-      // Step 2: Find comments related to these announcements
+      
       const announcementIds = announcements.map(announcement => announcement._id);
       const comments = await Comment.find({ announcementId: { $in: announcementIds } });
   
-      // Step 3: Attach comments to their corresponding announcements
+      
       const announcementsWithComments = announcements.map(announcement => ({
-        ...announcement._doc, // Spread announcement data
+        ...announcement._doc, // Spread announcement data. _doc is used to access the document object. Don't forget this!!!
         comments: comments.filter(comment => comment.announcementId.equals(announcement._id)) // Attach comments
       }));
   
@@ -360,7 +360,7 @@ const AdminController = {
     try {
       const { courseCode } = req.params;
       const { title, content } = req.body;
-      const adminID = req.user.sp_userId; // Assuming this is set correctly in middleware
+      const adminID = req.user.sp_userId; 
   
       // Validate input
       if (!title || !content) {
@@ -379,6 +379,7 @@ const AdminController = {
         courseCode,
         adminID,
         title,
+        type: 'course',
         content,
         datePosted: new Date(),
       });
@@ -523,13 +524,13 @@ addAdmin: async (req, res) => {
   const { name, email, contact, instrument } = req.body;
 
   try {
-    // Find the student with the largest studentID
+    
     const lastInstructor = await Instructor.findOne().sort({ instructorID: -1 }).limit(1);
 
-    // Generate the new studentID by incrementing the highest existing studentID
+    
     const newInstructorID = lastInstructor ? (parseInt(lastInstructor.instructorID, 10) + 1).toString().padStart(4, '0') : '0001';
 
-    // Create the new student with the generated ID
+   
     const newInstructor = new Instructor({
       instructorID: newInstructorID,
       name,
@@ -556,7 +557,7 @@ addAdmin: async (req, res) => {
             return res.status(404).json({ message: 'Admin not found' });
         }
 
-        // ✅ Properly hash the new password before saving
+        
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         admin.password = hashedPassword;
