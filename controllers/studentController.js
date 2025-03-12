@@ -34,11 +34,11 @@ const StudentController = {
       const courseAnnouncements = await Announcement.find({ courseCode: { $in: courseCodes } });
   
       if (!courseAnnouncements.length) {
-        return res.status(404).json({ message: 'No announcements found for this student\'s courses' });
+        return res.status(404).json({ message: "No announcements found for this student's courses" });
       }
   
       // Fetch any general (admin-type) announcements
-      const adminAnnouncements = await Announcement.find({ type: 'admin' }).select('title content time');
+      const adminAnnouncements = await Announcement.find({ type: 'admin' });
   
       // Combine course-specific and admin announcements
       const allAnnouncements = [
