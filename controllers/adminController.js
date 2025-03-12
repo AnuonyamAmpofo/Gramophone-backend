@@ -319,7 +319,7 @@ const AdminController = {
         title,
         content,
         type: 'admin',
-        time: new Date(),
+        datePosted: new Date(),
       });
       await newAnnouncement.save();
       res.status(201).json({ message: 'Announcement added successfully' });
