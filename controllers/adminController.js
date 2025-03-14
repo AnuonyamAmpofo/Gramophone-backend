@@ -314,12 +314,15 @@ const AdminController = {
   },
   addAnnouncement: async (req, res) => {
     const { title, content } = req.body;
+    const adminID = req.user.sp_userId;
     try {
       const newAnnouncement = new Announcement({
+        courseCode: 'admin',
+        instructorID: adminID,
         title,
         content,
         type: 'admin',
-        datePosted: new Date(),
+        time: new Date(),
       });
       await newAnnouncement.save();
       res.status(201).json({ message: 'Announcement added successfully' });
