@@ -449,7 +449,7 @@ const AdminController = {
   
 
 editAnnouncement: async (req, res) => {
-    const { announcementId } = req.params; // Assuming announcementId is the ID of the announcement to edit
+    const { announcementId } = req.params; 
     const { title, content } = req.body;
 
     try {

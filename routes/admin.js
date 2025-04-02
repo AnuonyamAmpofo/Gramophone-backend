@@ -40,9 +40,9 @@ router.get('/courses/:courseCode/announcements', AdminController.getCourseAnnoun
 router.post('/courses/:courseCode/announcement', AdminController.postAnnouncement);
 router.get('/announcement/getannouncements', AdminController.getAllAnnouncements),
 
-router.delete('/courses/:courseCode/announcement/:announcementId', AdminController.deleteAnnouncement);
+router.delete('/courses/announcement/:announcementId', AdminController.deleteAnnouncement);
 
-router.patch('/courses/:courseCode/announcement/:announcementId', AdminController.editAnnouncement);
+router.patch('/courses/announcement/:announcementId', AdminController.editAnnouncement);
 
 router.post('/courses/:courseCode/student/:studentID/comments', AdminController.postCommentForStudent);
 

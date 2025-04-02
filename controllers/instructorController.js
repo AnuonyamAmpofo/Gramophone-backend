@@ -212,7 +212,7 @@ const InstructorController = {
         return res.status(404).json({ message: 'Course not found or you do not have access' });
       }
   
-      // Create a new announcement
+     
       const newAnnouncement = new Announcement({
         courseCode,
         instructorID,
@@ -221,10 +221,10 @@ const InstructorController = {
         datePosted: new Date(),
       });
   
-      // Save the new announcement
+     
       await newAnnouncement.save();
   
-      // Add the announcement to the course's announcements array
+     
       course.announcements.push(newAnnouncement._id);
       await course.save();
   
