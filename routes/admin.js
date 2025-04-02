@@ -34,7 +34,7 @@ router.get('/student/instructor-find', AdminController.findInstructorInstrument)
 router.post('/announcements', AdminController.addAnnouncement);
 router.get('/announcements', AdminController.viewAnnouncements);
 router.delete('/announcements/:announcementId', AdminController.deleteAnnouncement);
-router.patch('/announcements/:annoouncementId', AdminController.editAnnouncement )
+router.patch('/announcements/:announcementId', AdminController.editAnnouncement )
 
 
 router.get('/courses/:courseCode/announcements', AdminController.getCourseAnnouncements);
