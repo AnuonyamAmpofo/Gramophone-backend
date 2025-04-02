@@ -7,6 +7,7 @@ const Admin = require('../models/Admin');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const upload = multer();
+const mongoose = require('mongoose');
 
 const formatTimeTo12Hour = (time) => {
   const [hour, minute] = time.split(":");
@@ -405,7 +406,7 @@ const AdminController = {
       res.status(500).json({ message: 'Failed to post announcement', error: err.message });
     }
   },
-  deleteAnnouncement: async (req, res) => {
+  deleteCourseAnnouncement: async (req, res) => {
     const { courseCode, announcementId } = req.params;
 
     try {
@@ -446,9 +447,33 @@ const AdminController = {
     }
 },
 
+deleteAnnouncement: async (req, res) => {
+  const { courseCode, announcementId } = req.params;
+
+  try {
+      // Validate ObjectId format
+      if (!mongoose.Types.ObjectId.isValid(announcementId)) {
+          return res.status(400).json({ message: 'Invalid announcement ID' });
+      }
+
+
+
+      // Delete the announcement document from the Announcement collection
+      const deletedAnnouncement = await Announcement.findByIdAndDelete(announcementId);
+
+      if (!deletedAnnouncement) {
+          return res.status(404).json({ message: 'Announcement not found' });
+      }
+
+      res.status(200).json({ message: 'Announcement deleted successfully' });
+  } catch (error) {
+      console.error("Error deleting announcement:", error.message); // Log detailed error
+      res.status(500).json({ message: 'Server error', error: error.message });
+  }
+},
   
 
-editAnnouncement: async (req, res) => {
+editCourseAnnouncement: async (req, res) => {
     const { announcementId } = req.params; 
     const { title, content } = req.body;
 
@@ -477,6 +502,36 @@ editAnnouncement: async (req, res) => {
         console.error("Error updating announcement:", error.message); // Log detailed error
         res.status(500).json({ message: 'Server error', error: error.message });
     }
+},
+editAnnouncement: async (req, res) => {
+  const { announcementId } = req.params; 
+  const { title, content } = req.body;
+
+  try {
+      // Validate ObjectId
+      if (!mongoose.Types.ObjectId.isValid(announcementId)) {
+          return res.status(400).json({ message: 'Invalid announcement ID' });
+      }
+
+      // Find and update the announcement
+      const announcement = await Announcement.findById(announcementId);
+
+      if (!announcement) {
+          return res.status(404).json({ message: 'Announcement not found' });
+      }
+
+      // Update fields if provided
+      if (title) announcement.title = title;
+      if (content) announcement.content = content;
+
+      // Save the updated announcement
+      await announcement.save();
+
+      res.status(200).json({ message: 'Announcement updated successfully' });
+  } catch (error) {
+      console.error("Error updating announcement:", error.message); // Log detailed error
+      res.status(500).json({ message: 'Server error', error: error.message });
+  }
 },
 
 getAllAnnouncements: async(req, res) => {

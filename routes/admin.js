@@ -33,6 +33,8 @@ router.get('/student/instructor-find', AdminController.findInstructorInstrument)
 // Announcement routes
 router.post('/announcements', AdminController.addAnnouncement);
 router.get('/announcements', AdminController.viewAnnouncements);
+router.delete('/announcements/:announcementId', AdminController.deleteAnnouncement);
+router.patch('/announcements/:annoouncementId', AdminController.editAnnouncement )
 
 
 router.get('/courses/:courseCode/announcements', AdminController.getCourseAnnouncements);
@@ -40,9 +42,9 @@ router.get('/courses/:courseCode/announcements', AdminController.getCourseAnnoun
 router.post('/courses/:courseCode/announcement', AdminController.postAnnouncement);
 router.get('/announcement/getannouncements', AdminController.getAllAnnouncements),
 
-router.delete('/courses/announcement/:announcementId', AdminController.deleteAnnouncement);
+router.delete('/courses/:courseCode/announcement/:announcementId', AdminController.deleteCourseAnnouncement);
 
-router.patch('/courses/announcement/:announcementId', AdminController.editAnnouncement);
+router.patch('/courses/:courseCode/announcement/:announcementId', AdminController.editCourseAnnouncement);
 
 router.post('/courses/:courseCode/student/:studentID/comments', AdminController.postCommentForStudent);
 
