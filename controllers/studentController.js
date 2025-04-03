@@ -311,7 +311,7 @@ const StudentController = {
           const userID = req.user.sp_userId;
           const role = req.user.type;
   
-          const student = await Student.findOne({userID});
+          const student = await Student.findOne({studentID: userID});
           if (!student){
             return res.status(404).json({message: "Student Not Found"})
           }
