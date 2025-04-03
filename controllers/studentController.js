@@ -3,6 +3,7 @@ const Announcement = require('../models/Announcement');
 const Course = require('../models/Course');
 const Instructor = require('../models/Instructor');
 const Comment = require('../models/Comment');
+const Feedback = require('../models/Feedback');
 const bcrypt = require('bcrypt');
 
 const StudentController = {
@@ -264,6 +265,79 @@ const StudentController = {
       res.status(500).json({ message: 'Failed to retrieve course announcements', error: err.message });
     }
   },
+
+   submitFeedback: async (req, res) => {
+    try {
+      const { message } = req.body;
+      const studentID = req.user.sp_userId;
+      // const studentName = req.user.studentName; 
+      
+      console.log('Student ID:', studentID);
+      const student = await Student.findOne({ studentID });
+
+
+      if (!student) {
+        return res.status(404).json({ success: false, message: "Student not found" });
+      }
+      const studentName = student.studentName; 
+
+      console.log(`Student Name: ${studentName}`);
+
+      const newFeedback = new Feedback({ studentID, studentName, message });
+      await newFeedback.save();
+  
+      res.status(201).json({ success: true, feedback: newFeedback });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error submitting feedback" });
+    }
+  
+   },
+
+   viewFeedback: async (req, res) => {
+    try {
+      const studentID = req.user.sp_userId; // Assuming this is stored in req.user
+      const feedbacks = await Feedback.find({ studentID });
+  
+      res.status(200).json({ success: true, feedbacks });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Error fetching feedback" });
+    }
+  },
+
+  replyFeedback: async (req, res) => {
+        try{
+          const { feedbackId } = req.params;
+          const { replyMessage } = req.body;
+          const userID = req.user.sp_userId;
+          const role = req.user.type;
+  
+          const student = await Student.findOne({userID});
+          if (!student){
+            return res.status(404).json({message: "Student Not Found"})
+          }
+  
+          const userName = student.studentName;
+          const feedback = await Feedback.findById(feedbackId);
+          if (!feedback) {
+            return res.status(404).json({ message: 'Feedback not found' });
+          }
+          // if (role === "student" && feedback.studentID !== userID) {
+          //   return res.status(403).json({ success: false, message: "Unauthorized to reply to this feedback" });
+          // }
+  
+          feedback.replies.push({ userID, userName, role, replyMessage });
+            await feedback.save();
+  
+            res.status(200).json({ success: true, message: "Reply added successfully" });
+          } catch (error) {
+            res.status(500).json({ success: false, message: "Error replying to feedback", error: error.message });
+          console.error("Error replying to feedback:", error);
+          }
+        
+        
+      },
+
+
   
   resetPassword: async (req, res) => {
     const { studentID } = req.params;

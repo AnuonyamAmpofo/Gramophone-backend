@@ -4,6 +4,7 @@ const Announcement = require('../models/Announcement');
 const Course = require('../models/Course');
 const Comment = require('../models/Comment');
 const Admin = require('../models/Admin');
+const Feedback = require('../models/Feedback');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const upload = multer();
@@ -925,6 +926,38 @@ getStudentInfo: async(req,res)=> {
           res.status(500).json({ message: 'Failed to add comment', error: err.message });
       }
     },
+    replyFeedback: async (req, res) => {
+      try{
+        const { feedbackId } = req.params;
+        const { replyMessage } = req.body;
+        const userID = req.user.sp_userId;
+        const role = req.user.type;
+
+        const admin = await Admin.findOne({userID});
+        if (!admin){
+          return res.status(404).json({message: "Admin Not Found"})
+        }
+
+        const userName = admin.username;
+        const feedback = await Feedback.findById(feedbackId);
+        if (!feedback) {
+          return res.status(404).json({ message: 'Feedback not found' });
+        }
+        // if (role === "student" && feedback.studentID !== userID) {
+        //   return res.status(403).json({ success: false, message: "Unauthorized to reply to this feedback" });
+        // }
+
+        feedback.replies.push({ userID, userName, role, replyMessage });
+          await feedback.save();
+
+          res.status(200).json({ success: true, message: "Reply added successfully" });
+        } catch (error) {
+          res.status(500).json({ success: false, message: "Error replying to feedback", error: error.message });
+        console.error("Error replying to feedback:", error);
+        }
+      
+      
+    }
 };
 
 module.exports = AdminController;

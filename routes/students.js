@@ -19,4 +19,8 @@ router.get('/allannouncements', StudentController.getAllCourseAnnouncements);
 router.get('/courses/:courseCode/getcourseannouncements',StudentController.getCourseAnnouncements);
 router.get('/comments', StudentController.getComments);
 
+router.get('/feedback', StudentController.viewFeedback);
+router.post('/feedback', StudentController.submitFeedback);
+router.post('/feedback/:feedbackId/reply', StudentController.replyFeedback);
+
 module.exports = router;

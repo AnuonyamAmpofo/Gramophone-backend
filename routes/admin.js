@@ -63,4 +63,7 @@ router.get('/courses/students/:studentID', AdminController.getStudentInfo),
 
 // router.post('/courses/assign-student-multiple', AdminController.assignStudentToCourses);
 
+//FEEDBACK ROUTES
+router.post('/feedback/:feedbackId', AdminController.replyFeedback);
+
 module.exports = router;
