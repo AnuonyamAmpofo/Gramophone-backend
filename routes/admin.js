@@ -65,6 +65,6 @@ router.get('/courses/students/:studentID', AdminController.getStudentInfo),
 
 //FEEDBACK ROUTES
 router.post('/feedback/:feedbackId', AdminController.replyFeedback);
-router.get('/feedback', AdminController.getFeedbacks);
+router.get('/feedback', AdminController.getAllFeedback);
 
 module.exports = router;
