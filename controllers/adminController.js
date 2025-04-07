@@ -957,6 +957,19 @@ getStudentInfo: async(req,res)=> {
         }
       
       
+    },
+
+    getAllFeedback: async (req, res) => {
+      try {
+        const feedbacks = await Feedback.find().populate('studentID', 'studentName email'); // Populate student details if needed
+        if (!feedbacks || feedbacks.length === 0) {
+          return res.status(404).json({ message: 'No feedback found' });
+        }
+        res.status(200).json({ feedbacks });
+      } catch (error) {
+        console.error('Error fetching feedback:', error);
+        res.status(500).json({ message: 'Failed to fetch feedback', error: error.message });
+      }
     }
 };
 

@@ -63,9 +63,9 @@ const announcementRoutes = require('./routes/announcements');
 const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 
-console.log("🔄 Checking route files...");
-console.log("✅ Login Routes:", loginRoutes);
-console.log("✅ Available routes in loginRoutes:", Object.keys(loginRoutes));
+// console.log("🔄 Checking route files...");
+// console.log("✅ Login Routes:", loginRoutes);
+// console.log("✅ Available routes in loginRoutes:", Object.keys(loginRoutes));
 
 mongoose.set("strictQuery", false);
 // Use routes
