@@ -961,7 +961,7 @@ getStudentInfo: async(req,res)=> {
 
     getAllFeedback: async (req, res) => {
       try {
-        const feedbacks = await Feedback.find().populate('studentID', 'studentName email'); // Populate student details if needed
+        const feedbacks = await Feedback.find()
         if (!feedbacks || feedbacks.length === 0) {
           return res.status(404).json({ message: 'No feedback found' });
         }
