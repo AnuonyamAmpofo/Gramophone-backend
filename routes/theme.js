@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { getTheme, updateTheme } = require('../controllers/themeController');
-// const authenticateUser = require('../middleware/authenticateUser');
+const { authenticateToken } = require('../middleware/auth');
 
-router.get('/', getTheme);
-router.put('/', updateTheme);
+router.get('/',authenticateToken, getTheme);
+router.put('/', authenticateToken, updateTheme);
 
 module.exports = router;
