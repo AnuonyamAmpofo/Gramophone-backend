@@ -987,7 +987,7 @@ getStudentInfo: async(req,res)=> {
 
     getTheme : async (req, res) => {
       try {
-        const admin = await Admin.findById(req.user.id); // or req.user._id
+        const admin = await Admin.findOne(req.user._id); // or req.user._id
         if (!admin) {
           return res.status(404).json({ message: "Admin not found" });
         }
@@ -1005,8 +1005,8 @@ getStudentInfo: async(req,res)=> {
           return res.status(400).json({ message: "Invalid theme value" });
         }
     
-        const updatedAdmin = await Admin.findByIdAndUpdate(
-          req.user.id,
+        const updatedAdmin = await Admin.findOneAndUpdate(
+          req.user._id,
           { theme },
           { new: true }
         );
