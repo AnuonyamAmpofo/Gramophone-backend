@@ -11,6 +11,12 @@ const studentSchema = new mongoose.Schema({
         day: String,
         time: String
     }],
+    theme: {
+        type: String,
+        enum: ['light', 'dark'],
+        default: 'light'
+      },
+      
     password: String
 });
 

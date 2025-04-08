@@ -62,6 +62,7 @@ const sessionLogRoutes = require('./routes/sessionLogs');
 const announcementRoutes = require('./routes/announcements');
 const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
+const themeRoutes = require('./routes/theme');
 
 // console.log("🔄 Checking route files...");
 // console.log("✅ Login Routes:", loginRoutes);
@@ -87,6 +88,7 @@ app.use('/attendance', attendanceRoutes);
 app.use('/sessionLogs', sessionLogRoutes);
 app.use('/announcements', announcementRoutes);
 app.use('/resources', resourceRoutes);
+app.use('/theme', themeRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
