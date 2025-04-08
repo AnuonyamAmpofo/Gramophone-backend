@@ -982,7 +982,48 @@ getStudentInfo: async(req,res)=> {
         console.error('Error fetching feedback:', error);
         res.status(500).json({ message: 'Failed to fetch feedback', error: error.message });
       }
+    },
+ 
+
+    getTheme : async (req, res) => {
+      try {
+        const admin = await Admin.findById(req.user.id); // or req.user._id
+        if (!admin) {
+          return res.status(404).json({ message: "Admin not found" });
+        }
+        res.json({ theme: admin.theme });
+      } catch (error) {
+        console.error("Error fetching theme:", error);
+        res.status(500).json({ message: "Failed to get theme" });
+      }
+    },
+
+    updateTheme: async (req, res) => {
+      try {
+        const { theme } = req.body;
+        if (!["light", "dark"].includes(theme)) {
+          return res.status(400).json({ message: "Invalid theme value" });
+        }
+    
+        const updatedAdmin = await Admin.findByIdAndUpdate(
+          req.user.id,
+          { theme },
+          { new: true }
+        );
+    
+        if (!updatedAdmin) {
+          return res.status(404).json({ message: "Admin not found" });
+        }
+    
+        res.json({ message: "Theme updated", theme: updatedAdmin.theme });
+      } catch (error) {
+        console.error("Error updating theme:", error);
+        res.status(500).json({ message: "Failed to update theme" });
+      }
     }
-};
+
+
+
+  }
 
 module.exports = AdminController;

@@ -67,4 +67,7 @@ router.get('/courses/students/:studentID', AdminController.getStudentInfo),
 router.post('/feedback/:feedbackId', AdminController.replyFeedback);
 router.get('/feedback', AdminController.getAllFeedback);
 
+router.get('/theme', AdminController.getTheme);
+router.put('/theme', AdminController.updateTheme);
+
 module.exports = router;
