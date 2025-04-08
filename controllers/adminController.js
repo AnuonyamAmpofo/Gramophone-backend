@@ -235,14 +235,26 @@ const AdminController = {
   
       // Generate the new studentID by incrementing the highest existing studentID
       const newInstructorID = lastInstructor ? (parseInt(lastInstructor.instructorID, 10) + 1).toString().padStart(4, '0') : '0001';
-  
+      
+            // Combine 'password' with the student's studentID
+            const newPassword = `password${newInstructorID}`;
+            
+            // Hash the new password
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+            
+            
+
+
+
       // Create the new student with the generated ID
       const newInstructor = new Instructor({
         instructorID: newInstructorID,
         name,
         email,
         contact,
-        instrument
+        instrument,
+        password: hashedPassword,
       });
   
       await newInstructor.save();

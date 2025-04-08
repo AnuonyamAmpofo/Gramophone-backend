@@ -34,17 +34,6 @@ db.once('open', () => {
     console.log('Connected to MongoDB');
 });
 
-// Import routes
-// try {
-//     // const loginRoutes = require('./routes/login');
-//     console.log("Login route imported successfully.");
-//     console.log("✅ Login route imported successfully!");
-
-// console.log("✅ Login route registered in Express!");
-
-// } catch (error) {
-//     console.error("Error importing login.js:", error);
-// }
 
 
 app.get('/test', (req, res) => {
@@ -64,20 +53,10 @@ const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 const themeRoutes = require('./routes/theme');
 
-// console.log("🔄 Checking route files...");
-// console.log("✅ Login Routes:", loginRoutes);
-// console.log("✅ Available routes in loginRoutes:", Object.keys(loginRoutes));
+
 
 mongoose.set("strictQuery", false);
-// Use routes
-// console.log("🔄 Before registering routes...");
-// console.log("✅ Login Routes:", loginRoutes);
-// console.log("✅ Admin Routes:", adminRoutes);
-// console.log("✅ Student Routes:", studentRoutes);
-// console.log("✅ Instructor Routes:", instructorRoutes);
-// console.log("✅ Announcement Routes:", announcementRoutes);
-// console.log("✅ Resource Routes:", resourceRoutes);
-// console.log("✅ Logout Routes:", logoutRoutes);
+
 
 app.use('/logout', logoutRoutes);
 app.use('/login', loginRoutes);
