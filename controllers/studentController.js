@@ -365,7 +365,7 @@ const StudentController = {
   },
   getTheme : async (req, res) => {
         try {
-          const student = await Student.findOne(req.user._id); // or req.user._id
+          const student = await Student.findOne({_id: req.user._id}); // or req.user._id
           if (!student) {
             return res.status(404).json({ message: "Student not found" });
           }
@@ -384,7 +384,7 @@ const StudentController = {
           }
       
           const updatedStudent = await Student.findOneAndUpdate(
-            req.user._id,
+            {_id: req.user._id},
             { theme },
             { new: true }
           );
