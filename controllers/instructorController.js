@@ -526,6 +526,43 @@ getAllAnnouncements: async(req, res) => {
         res.status(500).json({ message: 'Failed to retrieve course details', error: err.message });
       }
     },
+
+    getTheme : async (req, res) => {
+          try {
+            const instructor = await Instructor.findOne(req.user._id); // or req.user._id
+            if (!instructor) {
+              return res.status(404).json({ message: "Instructor not found" });
+            }
+            res.json({ theme: instructor.theme });
+          } catch (error) {
+            console.error("Error fetching theme:", error);
+            res.status(500).json({ message: "Failed to get theme" });
+          }
+        },
+    
+        updateTheme: async (req, res) => {
+          try {
+            const { theme } = req.body;
+            if (!["light", "dark"].includes(theme)) {
+              return res.status(400).json({ message: "Invalid theme value" });
+            }
+        
+            const updatedInstructor = await Instructor.findOneAndUpdate(
+              req.user._id,
+              { theme },
+              { new: true }
+            );
+        
+            if (!updatedInstructor) {
+              return res.status(404).json({ message: "Instructor not found" });
+            }
+        
+            res.json({ message: "Theme updated", theme: updatedInstructor.theme });
+          } catch (error) {
+            console.error("Error updating theme:", error);
+            res.status(500).json({ message: "Failed to update theme" });
+          }
+        }
     
   
 

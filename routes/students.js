@@ -23,4 +23,6 @@ router.get('/feedback', StudentController.viewFeedback);
 router.post('/feedback', StudentController.submitFeedback);
 router.post('/feedback/:feedbackId/reply', StudentController.replyFeedback);
 
+router.get('/theme', StudentController.getTheme);
+router.put('/theme', StudentController.updateTheme);
 module.exports = router;

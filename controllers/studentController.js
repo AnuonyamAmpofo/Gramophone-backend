@@ -362,7 +362,43 @@ const StudentController = {
     } catch (err) {
       res.status(500).json({ message: 'Failed to reset password', error: err.message });
     }
-  }
+  },
+  getTheme : async (req, res) => {
+        try {
+          const student = await Student.findOne(req.user._id); // or req.user._id
+          if (!student) {
+            return res.status(404).json({ message: "Student not found" });
+          }
+          res.json({ theme: student.theme });
+        } catch (error) {
+          console.error("Error fetching theme:", error);
+          res.status(500).json({ message: "Failed to get theme" });
+        }
+      },
+  
+      updateTheme: async (req, res) => {
+        try {
+          const { theme } = req.body;
+          if (!["light", "dark"].includes(theme)) {
+            return res.status(400).json({ message: "Invalid theme value" });
+          }
+      
+          const updatedStudent = await Student.findOneAndUpdate(
+            req.user._id,
+            { theme },
+            { new: true }
+          );
+      
+          if (!updatedStudent) {
+            return res.status(404).json({ message: "Student not found" });
+          }
+      
+          res.json({ message: "Theme updated", theme: updatedStudent.theme });
+        } catch (error) {
+          console.error("Error updating theme:", error);
+          res.status(500).json({ message: "Failed to update theme" });
+        }
+      }
 
 };
 

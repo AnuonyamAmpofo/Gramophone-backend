@@ -39,5 +39,9 @@ router.get('/name-info', InstructorController.getInstructorName);
 router.post('/courses/:courseCode/student/:studentID/comments', InstructorController.postCommentForStudent);
 router.get('/courses/students/:studentID', InstructorController.getStudentInfo), 
 router.put('/reset-password/:instructorID', InstructorController.resetPassword);
+
+router.get('/theme', InstructorController.getTheme);
+router.put('/theme', InstructorController.updateTheme);
+
 module.exports = router;
 
