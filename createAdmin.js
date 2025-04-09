@@ -21,7 +21,7 @@ const createAdmin = async () => {
         if (existingAdmin) {
             console.log("⚠️ Admin already exists!");
             return;
-        }
+        } 
 
         console.log("📝 Plain-text Password before hashing:", password);
         // const hashedPassword = await bcrypt.hash(password, 10);
