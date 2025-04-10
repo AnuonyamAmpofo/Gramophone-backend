@@ -529,7 +529,7 @@ getAllAnnouncements: async(req, res) => {
 
     getTheme : async (req, res) => {
           try {
-            const instructor = await Instructor.findOne({_id: req.user._id}); // or req.user._id
+            const instructor = await Instructor.findOne({instructorID: req.user.sp_userId}); // or req.user._id
             if (!instructor) {
               return res.status(404).json({ message: "Instructor not found" });
             }
@@ -548,7 +548,7 @@ getAllAnnouncements: async(req, res) => {
             }
         
             const updatedInstructor = await Instructor.findOneAndUpdate(
-              {_id: req.user._id,},
+              {instructorID: req.user.sp_userId},
               { theme },
               { new: true }
             );

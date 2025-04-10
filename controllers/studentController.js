@@ -365,10 +365,11 @@ const StudentController = {
   },
   getTheme : async (req, res) => {
         try {
-          const student = await Student.findOne({_id: req.user._id}); // or req.user._id
+          const student = await Student.findOne({studentID: req.user.sp_userId}); // or req.user._id
           if (!student) {
             return res.status(404).json({ message: "Student not found" });
           }
+          console.log(`Student ID: ${student.studentID}`);
           res.json({ theme: student.theme });
         } catch (error) {
           console.error("Error fetching theme:", error);

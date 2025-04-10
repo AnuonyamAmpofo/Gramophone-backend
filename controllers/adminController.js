@@ -987,11 +987,15 @@ getStudentInfo: async(req,res)=> {
 
     getTheme : async (req, res) => {
       try {
-        const admin = await Admin.findOne({id: req.user._id}); // or req.user._id
+        console.log(req.user.sp_userId)
+        const admin = await Admin.findById(req.user.userId); // or req.user._id
         if (!admin) {
           return res.status(404).json({ message: "Admin not found" });
         }
         res.json({ theme: admin.theme });
+
+
+        console.log(`Admin username: ${admin.name}` )
       } catch (error) {
         console.error("Error fetching theme:", error);
         res.status(500).json({ message: "Failed to get theme" });
@@ -1005,8 +1009,8 @@ getStudentInfo: async(req,res)=> {
           return res.status(400).json({ message: "Invalid theme value" });
         }
     
-        const updatedAdmin = await Admin.findOneAndUpdate(
-          {_id: req.user._id},
+        const updatedAdmin = await Admin.findByIdAndUpdate(
+          req.user.userId,
           { theme },
           { new: true }
         );
