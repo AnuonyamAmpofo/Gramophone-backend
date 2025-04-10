@@ -49,6 +49,8 @@ router.patch('/courses/:courseCode/announcement/:announcementId', AdminControlle
 router.post('/courses/:courseCode/student/:studentID/comments', AdminController.postCommentForStudent);
 
 router.post('/reset-password/:username', AdminController.resetPassword);
+router.post('/reset-student-password/:studentID', AdminController.resetstudentPassword);
+
 
 // Course Routes
 

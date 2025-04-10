@@ -27,6 +27,12 @@ const AdminController = {
   
       // Generate the new studentID by incrementing the highest existing studentID
       const newStudentID = lastStudent ? (parseInt(lastStudent.studentID, 10) + 1).toString().padStart(4, '0') : '0001';
+
+      const newPassword = `password${newstudentID}`;
+            
+            // Hash the new password
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
   
       // Create the new student with the generated ID
       const newStudent = new Student({
@@ -35,7 +41,8 @@ const AdminController = {
         email,
         contact,
         instrument,
-        schedule
+        schedule,
+        password: hashedPassword,
       });
   
       await newStudent.save();
@@ -640,6 +647,32 @@ addAdmin: async (req, res) => {
         await admin.save();
 
         console.log(`🔑 Hashed password saved for ${username}:`, hashedPassword);
+
+        res.status(200).json({ message: 'Password reset successfully!' });
+    } catch (error) {
+        console.error('Reset Password Error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+    },
+
+    resetstudentPassword: async (req, res) => {
+      const { studentID } = req.params;
+      const { newPassword } = req.body;
+  
+      try {
+        const student = await Student.findOne({ studentID });
+
+        if (!student) {
+            return res.status(404).json({ message: 'Student not found' });
+        }
+
+        
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        student.password = hashedPassword;
+        await student.save();
+
+        console.log(`🔑 Hashed password saved for ${studentID}:`, hashedPassword);
 
         res.status(200).json({ message: 'Password reset successfully!' });
     } catch (error) {

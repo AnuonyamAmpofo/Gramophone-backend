@@ -36,10 +36,10 @@ db.once('open', () => {
 
 
 
-app.get('/test', (req, res) => {
-    console.log("✅ Test route hit");
-    res.send("Server is working!");
-});
+// app.get('/test', (req, res) => {
+//     console.log("✅ Test route hit");
+//     res.send("Server is working!");
+// });
 
 
 const loginRoutes = require('./routes/login');
@@ -52,6 +52,8 @@ const announcementRoutes = require('./routes/announcements');
 const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 const themeRoutes = require('./routes/theme');
+const forgetRoutes = require('./routes/forget');
+// const authRoutes = require("./middleware/authRoutes");
 
 
 
@@ -68,6 +70,8 @@ app.use('/sessionLogs', sessionLogRoutes);
 app.use('/announcements', announcementRoutes);
 app.use('/resources', resourceRoutes);
 app.use('/theme', themeRoutes);
+app.use('/forget', forgetRoutes); 
+// app.use('/auth', authRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {
