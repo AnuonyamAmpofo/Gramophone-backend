@@ -385,7 +385,7 @@ const StudentController = {
           }
       
           const updatedStudent = await Student.findOneAndUpdate(
-            {_id: req.user._id},
+            {_id: req.user.userId},
             { theme },
             { new: true }
           );
