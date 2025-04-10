@@ -252,8 +252,8 @@ const StudentController = {
       // Fetch all announcements related to the course
       const courseAnnouncements = await Announcement.find({ courseCode });
   
-      if (!courseAnnouncements.length) {
-        return res.status(404).json({ message: 'No announcements found for this course' });
+      if (!courseAnnouncements || courseAnnouncements.length === 0) {
+        return res.status(200).json({ courseAnnouncements: [] }); // Return empty array instead of 404
       }
   
       // Return the announcements in the response
