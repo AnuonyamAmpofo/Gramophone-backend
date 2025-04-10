@@ -106,8 +106,8 @@ module.exports = {
       const { model } = result;
   
       // Log inputs for debugging
-      console.log('Username:', username);
-      console.log('New Password:', newPassword);
+    //   console.log('Username:', username);
+    //   console.log('New Password:', newPassword);
   
       // Ensure the newPassword is not null or undefined
       if (!newPassword) {
@@ -116,7 +116,7 @@ module.exports = {
   
       // Hash the new password
       const hashedPassword = await bcrypt.hash(newPassword, 10);
-      console.log('Hashed Password:', hashedPassword);  // Debugging the hashed password
+    //   console.log('Hashed Password:', hashedPassword);
   
       await model.findOneAndUpdate({ username }, { password: hashedPassword });
       otpStore.delete(username); // clear OTP after successful update
