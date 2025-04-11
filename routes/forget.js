@@ -13,4 +13,4 @@ router.post('/verify-otp', authController.verifyOTP);
 // Route to update password after verifying OTP
 router.put('/update-password', authController.updatePassword);
 
-module.exports = router;
+module.exports = router; 
