@@ -28,7 +28,7 @@ const AdminController = {
       // Generate the new studentID by incrementing the highest existing studentID
       const newStudentID = lastStudent ? (parseInt(lastStudent.studentID, 10) + 1).toString().padStart(4, '0') : '0001';
 
-      const newPassword = `password${newstudentID}`;
+      const newPassword = `password${newStudentID}`;
             
             // Hash the new password
             const saltRounds = 10;
