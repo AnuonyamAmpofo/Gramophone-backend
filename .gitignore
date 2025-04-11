@@ -1,9 +1,12 @@
 node_modules
 .vercel
 createAdmin.js
-.envtestPassword.js
+.env
+testPassword.js
 addDefaultThemes.js
 assignPass.js
 dataimport.js
 instructorImport.js
 verifyPassAdmin.js
+.env
+.gitignore
