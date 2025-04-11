@@ -8,9 +8,9 @@ const Admin = require('./models/Admin');
 dotenv.config();
 
 const createAdmin = async () => {
-    const username = "Ampmusic"; 
-    const password = "AmpmusicPass1"; 
-    const name = "Ampmusic Amo-Mensah"; 
+    const username = "Anuonyam"; 
+    const password = "AmpmusicAdmin"; 
+    const name = "Anuonyam Ampofo Amo-Mensah"; 
     try {
         
         await mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -24,11 +24,11 @@ const createAdmin = async () => {
         }
 
         console.log("📝 Plain-text Password before hashing:", password);
-        // const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         // console.log(" Hashed Password:", password);
 
         
-        const newAdmin = new Admin({ username, password: password });
+        const newAdmin = new Admin({ username, password: hashedPassword, name });
         await newAdmin.save();
 
         console.log(`✅ Admin created successfully! Username: ${username}`);

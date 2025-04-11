@@ -975,10 +975,10 @@ getStudentInfo: async(req,res)=> {
       try{
         const { feedbackId } = req.params;
         const { replyMessage } = req.body;
-        const userID = req.user.sp_userId;
+        const userID = req.user.userId;
         const role = req.user.type;
 
-        const admin = await Admin.findOne({userID});
+        const admin = await Admin.findById(userID);
         if (!admin){
           return res.status(404).json({message: "Admin Not Found"})
         }
