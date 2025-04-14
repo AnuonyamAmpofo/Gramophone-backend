@@ -313,6 +313,8 @@ const AdminController = {
             return res.status(404).json({ message: 'Instructor not found' });
         }
 
+        const deletdCourse = await Course.deleteMany({ instructorID });
+
         // Step 2: Find all courses referencing the student in their sessions
         // const coursesWithInstructor = await Course.find({ "instructorID": instructorID });
 
