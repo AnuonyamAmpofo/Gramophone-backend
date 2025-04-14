@@ -25,7 +25,7 @@ const InstructorController = {
       // console.log('Courses found:', courses);  // Debug statement
   
       if (!courses.length) {
-        return res.status(404).json({ message: 'No courses found for this instructor' });
+        return res.status(200).json({ message: 'No courses found for this instructor' });
       }
   
       res.status(200).json({

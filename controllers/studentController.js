@@ -17,6 +17,7 @@ const StudentController = {
     }
   },
 
+  
   getAllCourseAnnouncements: async (req, res) => {
     try {
       const studentID = req.user.sp_userId; // Assuming student's ID is stored in req.user
