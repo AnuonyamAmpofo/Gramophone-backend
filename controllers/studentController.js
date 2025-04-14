@@ -25,7 +25,7 @@ const StudentController = {
       const courses = await Course.find({ 'sessions.studentID': studentID });
   
       if (!courses.length) {
-        return res.status(404).json({ message: 'No courses found for this student' });
+        return res.status(200).json({ message: 'No courses found for this student' });
       }
   
       // Extract course codes from the courses the student is enrolled in
@@ -35,7 +35,7 @@ const StudentController = {
       const courseAnnouncements = await Announcement.find({ courseCode: { $in: courseCodes } });
   
       if (!courseAnnouncements.length) {
-        return res.status(404).json({ message: "No announcements found for this student's courses" });
+        return res.status(200).json({ message: "No announcements found for this student's courses" });
       }
   
       // Fetch any general (admin-type) announcements
