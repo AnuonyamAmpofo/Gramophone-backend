@@ -313,7 +313,7 @@ const AdminController = {
             return res.status(404).json({ message: 'Instructor not found' });
         }
 
-        const deletdCourse = await Course.deleteMany({ instructorID });
+        const deletdCourses = await Course.deleteMany({ instructorID });
 
         // Step 2: Find all courses referencing the student in their sessions
         // const coursesWithInstructor = await Course.find({ "instructorID": instructorID });
@@ -328,6 +328,7 @@ const AdminController = {
         res.status(200).json({
             message: 'Instructor and associated courses deleted successfully',
             deletedInstructor,
+            deletedCourses: deletedCourses.deletedCount, // Number of courses deleted
             // updatedCourses: updateCourses.modifiedCount,
             coursesWithInstructor
         });
