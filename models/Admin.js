@@ -9,7 +9,8 @@ const adminSchema = new mongoose.Schema({
         type: String,
         enum: ['light', 'dark'],
         default: 'light'
-      }
+      },
+    email: { type: String }
       
 });
 

@@ -299,6 +299,11 @@ const StudentController = {
       const feedbacks = await Feedback.find({ studentID });
   
       res.status(200).json({ success: true, feedbacks });
+
+
+      if(!feedbacks || feedbacks.length === 0) {
+        return res.status(200).json({ message: "No feedback found" });
+      }
     } catch (error) {
       res.status(500).json({ success: false, message: "Error fetching feedback" });
     }
