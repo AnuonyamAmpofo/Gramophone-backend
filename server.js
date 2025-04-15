@@ -31,8 +31,10 @@ mongoose.connect(mongoDBUri);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
-    console.log('Connected to MongoDB');
+    logger.info('Connected to MongoDB');
 });
+
+
 
 
 
@@ -53,9 +55,25 @@ const resourceRoutes = require('./routes/resources');
 const logoutRoutes = require('./routes/logout');
 const themeRoutes = require('./routes/theme');
 const forgetRoutes = require('./routes/forget');
+const logger = require('./logger'); // Import the logger
 // const authRoutes = require("./middleware/authRoutes");
 
 
+// console.log = (...args) => {
+//     logger.info(args.join(' '));
+//   };
+  
+//   console.error = (...args) => {
+//     logger.error(args.join(' '));
+//   };
+  
+//   console.warn = (...args) => {
+//     logger.warn(args.join(' '));
+//   };
+  
+//   console.debug = (...args) => {
+//     logger.debug(args.join(' '));
+//   };
 
 mongoose.set("strictQuery", false);
 
@@ -73,9 +91,12 @@ app.use('/theme', themeRoutes);
 app.use('/forget', forgetRoutes); 
 // app.use('/auth', authRoutes);
 
+
+
+
 // Global Error Handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    logger.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });
 });
 

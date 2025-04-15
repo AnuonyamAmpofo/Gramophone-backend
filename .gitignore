@@ -10,3 +10,12 @@ instructorImport.js
 verifyPassAdmin.js
 .env
 .gitignore
+
+.logger.js
+
+README.md
+
+combined.log
+error.log
+
+

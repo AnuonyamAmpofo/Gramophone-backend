@@ -345,7 +345,7 @@ getAllAnnouncements: async(req, res) => {
     ];
 
     if (allAnnouncements.length === 0) {
-      return res.status(404).json({ message: 'No announcements available.' });
+      return res.status(200).json({ message: 'No announcements available.' });
     }
 
     // 5. Return all announcements (both course-specific and admin announcements)
