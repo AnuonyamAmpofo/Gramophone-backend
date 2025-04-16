@@ -51,6 +51,55 @@ const AdminController = {
       res.status(500).json({ message: 'Failed to add student', error: err.message });
     }
   },  
+
+  getStudentCourses : async (req, res) => {
+    const { studentID } = req.params;
+  
+    try {
+      
+      const courses = await Course.find({
+        'sessions.studentID': studentID
+      });
+  
+      // Map through each course to extract the specific session details for that student
+      const studentCourses = courses.map(course => {
+        const studentSession = course.sessions.find(s => s.studentID === studentID);
+        return {
+          // courseID: course.course,
+          courseCode: course.courseCode,
+          instrument: course.instrument,
+          instructorName: course.instructorName,
+          instructorID: course.instructorID,
+          day: course.day,
+          sessionTime: studentSession?.time || null,
+        };
+      });
+  
+      res.status(200).json(studentCourses);
+    } catch (error) {
+      console.error('Error fetching student courses:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+
+  },
+
+  unassignStudent: async (req, res) => {
+    try {
+      const { studentID, courseCode } = req.body;
+  
+      const course = await Course.findOne({courseCode});
+      if (!course) return res.status(404).json({ message: 'Course not found' });
+  
+      // Filter out the student session
+      course.sessions = course.sessions.filter(session => session.studentID !== studentID);
+      await course.save();
+  
+      res.status(200).json({ message: 'Student unassigned successfully' });
+    } catch (err) {
+      console.error('Error unassigning student:', err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
   updateStudent: async (req, res) => {
     const { studentID } = req.params;
     const updateData = req.body;
@@ -216,7 +265,7 @@ const AdminController = {
     }
   },
   findInstructorInstrument: async (req, res) => {
-    console.log("Instructor find endpoint hit");
+    // console.log("Instructor find endpoint hit");
     const instrument = req.query.instrument;
     
     if (!instrument) {

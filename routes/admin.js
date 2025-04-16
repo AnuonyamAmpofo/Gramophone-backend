@@ -62,7 +62,8 @@ router.get('/courses', AdminController.viewCourses);
 router.get('/courses/instrument/:instrument', AdminController.viewCoursesByInstrument);
 router.post('/courses/assign-student', AdminController.assignStudent);
 router.get('/courses/students/:studentID', AdminController.getStudentInfo), 
-
+router.get('/courses/student-courses/:studentID', AdminController.getStudentCourses),
+router.post('/courses/unassign-student', AdminController.unassignStudent);
 // router.post('/courses/assign-student-multiple', AdminController.assignStudentToCourses);
 
 //FEEDBACK ROUTES
