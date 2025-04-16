@@ -21,12 +21,12 @@ const migrateStudentSchedules = async () => {
       for (const schedule of student.schedule) {
         if (!schedule.courseCode) {
           // Log the query parameters
-          console.log(`Searching for course with: day=${schedule.day}, time=${schedule.time}, studentID=${student.studentID}`);
+          console.log(`Searching for course with: day=${schedule.day}, studentID=${student.studentID}`);
 
           // Find the course that matches the day and time
           const course = await Course.findOne({
             day: schedule.day,
-            "sessions.time": schedule.time,
+            // "sessions.time": schedule.time,
             "sessions.studentID": student.studentID,
           });
 

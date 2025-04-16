@@ -105,6 +105,7 @@ const AdminController = {
       }
       return schedule.courseCode !== courseCode;
     });
+      await student.save();
   
       res.status(200).json({ message: 'Student unassigned successfully' });
     } catch (err) {
