@@ -11,11 +11,11 @@ verifyPassAdmin.js
 .env
 .gitignore
 
-.logger.js
+# .logger.js
 
 README.md
 
-combined.log
-error.log
+# combined.log
+# error.log
 
 
