@@ -87,24 +87,30 @@ const AdminController = {
     try {
       const { studentID, courseCode } = req.body;
   
-      const course = await Course.findOne({courseCode});
+      // Find the course by courseCode
+      const course = await Course.findOne({ courseCode });
       if (!course) return res.status(404).json({ message: 'Course not found' });
   
-      // Filter out the student session
+      // Remove the student from the course's sessions array
       course.sessions = course.sessions.filter(session => session.studentID !== studentID);
       await course.save();
-
+  
+      // Find the student by studentID
       const student = await Student.findOne({ studentID });
-    if (!student) return res.status(404).json({ message: 'Student not found' });
-
-    // Remove the schedule entry corresponding to the courseCode
-    student.schedule = student.schedule.filter(schedule => {
-      // Fallback: If courseCode is missing, match by day and time
-      if (!schedule.courseCode) {
-        return !(schedule.day === course.day && schedule.time === course.sessions.find(s => s.studentID === studentID)?.time);
-      }
-      return schedule.courseCode !== courseCode;
-    });
+      if (!student) return res.status(404).json({ message: 'Student not found' });
+  
+      // Remove the schedule entry corresponding to the courseCode
+      student.schedule = student.schedule.filter(schedule => {
+        if (!schedule.courseCode) {
+          // Fallback: Match by day and time
+          console.log(`No courseCode found for student ${studentID}. Matching by day and time.`);
+          const matchingSession = course.sessions.find(s => s.studentID === studentID);
+          return !(schedule.day === course.day && schedule.time === matchingSession?.time);
+        }
+        return schedule.courseCode !== courseCode;
+      });
+  
+      // Save the updated student document
       await student.save();
   
       res.status(200).json({ message: 'Student unassigned successfully' });
@@ -236,7 +242,7 @@ const AdminController = {
           if (!existingSchedule) {
             // Log the addition to the schedule
             console.log(`Adding to schedule: Day: ${day}, Time: ${formattedTime}`);
-            student.schedule.push({ day, time: formattedTime });
+            student.schedule.push({ day, time: formattedTime, courseCode: course.courseCode });
             await student.save();
           } else {
             console.log("Schedule entry already exists, not adding.");
