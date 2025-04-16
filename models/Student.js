@@ -9,7 +9,8 @@ const studentSchema = new mongoose.Schema({
     schedule: [{
         instructorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Instructor' },
         day: String,
-        time: String
+        time: String,
+        courseCode: String,
     }],
     theme: {
         type: String,

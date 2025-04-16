@@ -93,6 +93,18 @@ const AdminController = {
       // Filter out the student session
       course.sessions = course.sessions.filter(session => session.studentID !== studentID);
       await course.save();
+
+      const student = await Student.findOne({ studentID });
+    if (!student) return res.status(404).json({ message: 'Student not found' });
+
+    // Remove the schedule entry corresponding to the courseCode
+    student.schedule = student.schedule.filter(schedule => {
+      // Fallback: If courseCode is missing, match by day and time
+      if (!schedule.courseCode) {
+        return !(schedule.day === course.day && schedule.time === course.sessions.find(s => s.studentID === studentID)?.time);
+      }
+      return schedule.courseCode !== courseCode;
+    });
   
       res.status(200).json({ message: 'Student unassigned successfully' });
     } catch (err) {
