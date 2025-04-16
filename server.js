@@ -34,24 +34,6 @@ db.once('open', () => {
     logger.info('Connected to MongoDB');
 });
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'https://ampsgramophone.vercel.app'
-  ];
-  
-  const forgetCorsOptions = {
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  };
-
 
 
 
@@ -106,7 +88,7 @@ app.use('/sessionLogs', sessionLogRoutes);
 app.use('/announcements', announcementRoutes);
 app.use('/resources', resourceRoutes);
 app.use('/theme', themeRoutes);
-app.use('/forget', cors(forgetCorsOptions), forgetRoutes);
+app.use('/forget', forgetRoutes); 
 // app.use('/auth', authRoutes);
 
 
