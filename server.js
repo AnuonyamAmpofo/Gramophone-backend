@@ -11,7 +11,11 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json()); // I replaced bodyParser.json() with express.json()
-app.use(cors()); 
+app.use(cors({
+    origin: ['https://ggam-students-portal.vercel.app', 'http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })); 
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -59,21 +63,7 @@ const logger = require('./logger'); // Import the logger
 // const authRoutes = require("./middleware/authRoutes");
 
 
-// console.log = (...args) => {
-//     logger.info(args.join(' '));
-//   };
-  
-//   console.error = (...args) => {
-//     logger.error(args.join(' '));
-//   };
-  
-//   console.warn = (...args) => {
-//     logger.warn(args.join(' '));
-//   };
-  
-//   console.debug = (...args) => {
-//     logger.debug(args.join(' '));
-//   };
+
 
 mongoose.set("strictQuery", false);
 
