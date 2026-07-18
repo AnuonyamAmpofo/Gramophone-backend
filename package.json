@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "PATH=\"/opt/homebrew/opt/node@20/bin:$PATH\" node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "back": "nodemon server.js"
+    "back": "PATH=\"/opt/homebrew/opt/node@20/bin:$PATH\" nodemon server.js"
+  },
+  "engines": {
+    "node": "20.x"
   },
   "keywords": [],
   "author": "",
